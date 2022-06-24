@@ -1,0 +1,14 @@
+.wrapper {
+	@apply py-5 px-2 max-w-7xl mx-auto flex items-center;
+
+	.logo {
+		@apply flex items-center flex-grow;
+
+		&__title {
+			@apply text-xl font-bold text-white;
+		}
+	}
+	.sign__links {
+		@apply flex items-center text-gray-500;
+	}
+}

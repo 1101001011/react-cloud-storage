@@ -1,0 +1,7 @@
+{
+	"serverPort": 5000,
+	"dbUrl": "mongodb+srv://briley:12345@cloud-storage.suokn.mongodb.net/?retryWrites=true&w=majority",
+	"secretKey": "cloud-storage-key",
+	"saltWorkFactor": 10,
+	"filePath": "D:\\Web\\TS\\React\\react-cloud-storage\\backend\\src\\files"
+}

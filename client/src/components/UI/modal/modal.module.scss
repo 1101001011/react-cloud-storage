@@ -1,0 +1,17 @@
+.modal {
+	@apply max-w-xl mt-28 px-14 py-16 rounded-3xl flex flex-col bg-white shadow-2xl;
+
+	.title {
+		@apply font-black mb-4;
+	}
+	.inputs {
+		@apply flex flex-col mb-4;
+	}
+	.toggle {
+		@apply mt-6 text-center text-sm;
+
+		&__title {
+			@apply text-gray-400 mr-3;
+		}
+	}
+}
