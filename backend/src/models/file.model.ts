@@ -1,14 +1,17 @@
 import mongoose from 'mongoose'
 
-export interface FileDocument extends mongoose.Document {
+export interface FileInput {
 	name: string
-	type: string
+	type?: string
+	path?: string
+	user: mongoose.Schema.Types.ObjectId
+	parent?: mongoose.Schema.Types.ObjectId
+}
+
+export interface FileDocument extends FileInput, mongoose.Document {
 	accessLink?: string
 	size: number
-	path: string
-	user: mongoose.Schema.Types.ObjectId
-	parent: mongoose.Schema.Types.ObjectId
-	children: mongoose.Schema.Types.ObjectId
+	children: [mongoose.Schema.Types.ObjectId]
 }
 
 const fileModel = new mongoose.Schema({
@@ -22,5 +25,5 @@ const fileModel = new mongoose.Schema({
 	children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
 })
 
-const File = mongoose.model<FileDocument>('FileModel', fileModel)
+const File = mongoose.model<FileDocument>('File', fileModel)
 export default File

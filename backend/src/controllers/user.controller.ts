@@ -3,6 +3,7 @@ import User from '../models/user.model';
 import UserService from '../services/user.service';
 import {signJWT} from '../utils/jwt.utils';
 import {UserInputType} from '../schemas/user.schema';
+import FileService from '../services/file.service';
 
 class UserController {
     async createUser(req: Request<{}, {}, UserInputType['body']>, res: Response) {
@@ -16,12 +17,13 @@ class UserController {
                     .json({ message: `User with email ${email} already exist` })
             }
 
-            await UserService.createUser({email, password})
+            const user = await UserService.createUser({email, password})
+            await FileService.createDir({user: user._id, name: '', path: ''})
 
-            return res.json({ message: 'User was created' })
+            return res.send({ message: 'User was created' })
         } catch (error) {
             console.log(error)
-            res.send({ message: 'Server error' })
+            return res.send({ message: 'Server error' })
         }
     }
 

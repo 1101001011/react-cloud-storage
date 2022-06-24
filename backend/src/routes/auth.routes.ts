@@ -1,6 +1,6 @@
 import {Express} from 'express'
 import UserController from '../controllers/user.controller';
-import validate from '../middleware/validate.middleware';
+import validate from '../middlewares/validate.middleware';
 import {userSchema} from '../schemas/user.schema';
 
 const authRoutes = (app: Express) => {

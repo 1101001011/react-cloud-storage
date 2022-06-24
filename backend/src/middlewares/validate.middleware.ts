@@ -10,8 +10,8 @@ const validate =
                 params: req.params
             })
             next()
-        } catch (e) {
-            return res.sendStatus(400).json(e.errors)
+        } catch (e: any) {
+            return res.status(400).send(e.errors)
         }
 }
 

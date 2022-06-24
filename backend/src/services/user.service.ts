@@ -4,7 +4,8 @@ import {omit} from 'lodash';
 
 class UserService {
     async createUser(input: UserInput) {
-        return await User.create(input)
+        const user = await User.create(input)
+        return omit(user.toJSON(), 'password')
     }
 
     async comparePassword({email, password}: {email: string, password: string}) {
