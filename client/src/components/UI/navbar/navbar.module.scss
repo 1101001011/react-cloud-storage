@@ -1,11 +1,11 @@
 .wrapper {
-	@apply py-5 px-2 max-w-7xl mx-auto flex items-center;
+	@apply py-3 px-10 mx-auto mb-10 flex items-center border-b border-neutral-300;
 
 	.logo {
 		@apply flex items-center flex-grow;
 
 		&__title {
-			@apply text-xl font-bold text-white;
+			@apply text-xl font-bold text-fuchsia-800;
 		}
 	}
 	.sign__links {

@@ -21,13 +21,17 @@ module.exports = {
 					padding: '10px 50px',
 					fontSize: '16px',
 					fontWeight: '600',
-					borderRadius: '30px',
+					borderRadius: '10px',
 					alignSelf: 'flex-start',
+
+					'&:hover': {
+						opacity: '0.9',
+					}
 				},
 				'.input': {
 					padding: '8px 16px',
 					border: '1px solid rgb(209 213 219)',
-					borderRadius: '30px',
+					borderRadius: '10px',
 					margin: '8px 0',
 
 					'&:focus': {

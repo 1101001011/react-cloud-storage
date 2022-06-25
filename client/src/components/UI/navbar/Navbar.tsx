@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom'
 import { GiMoonOrbit } from 'react-icons/gi'
-import styles from './navbar.module.scss'
 import { useTypedSelector } from '../../../hooks/useTypedSelector'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
 import { logout } from '../../../store/reducers/userReducer'
+import styles from './navbar.module.scss'
 
 const Navbar = () => {
 	const { isAuth } = useTypedSelector(state => state.user)
@@ -14,7 +14,7 @@ const Navbar = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.logo}>
 					<GiMoonOrbit size={40} className='mr-3 text-primary' />
-					<div className={styles.logo__title}>Flynz</div>
+					<div className={styles.logo__title}>Cybersafe</div>
 				</div>
 				{!isAuth && (
 					<div className={styles.sign__links}>

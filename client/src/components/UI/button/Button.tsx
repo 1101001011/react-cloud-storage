@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 type btnTypes = 'login' | 'registration'
 
 interface ButtonProps {
-	type: btnTypes
+	type?: btnTypes
 	children: string
 	onClick: () => void
 }
