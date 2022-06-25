@@ -2,7 +2,7 @@
 	@apply py-3 px-10 mx-auto mb-10 flex items-center border-b border-neutral-300;
 
 	.logo {
-		@apply flex items-center flex-grow;
+		@apply flex items-center flex-grow cursor-pointer;
 
 		&__title {
 			@apply text-xl font-bold text-violet-600;

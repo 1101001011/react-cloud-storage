@@ -11,6 +11,7 @@ export interface IFile {
 export interface FileState {
     files: IFile[],
     currentDir: null,
+    dirStack: string[]
     error: string | undefined
     popupDisplay: string
 }

@@ -17,7 +17,9 @@ class FileController {
                 file.path = `${parentFile.path}\\${file.name}`
                 await FileService.createDir(file)
                 parentFile.children.push(file._id)
+                await parentFile.save()
             }
+            await file.save()
 
             return res.json(file)
         } catch (e) {

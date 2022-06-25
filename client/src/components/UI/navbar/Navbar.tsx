@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 import { BsSafe2Fill } from 'react-icons/bs'
 import { useTypedSelector } from '../../../hooks/useTypedSelector'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
@@ -8,11 +8,15 @@ import styles from './navbar.module.scss'
 const Navbar = () => {
 	const { isAuth } = useTypedSelector(state => state.user)
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	return (
 		<div>
 			<div className={styles.wrapper}>
-				<div className={styles.logo}>
+				<div
+					className={styles.logo}
+					onClick={() => navigate('/storage')}
+				>
 					<BsSafe2Fill size={40} className='mr-3 text-violet-600' />
 					<div className={styles.logo__title}>Cybersafe</div>
 				</div>

@@ -41,6 +41,7 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 const initialState: FileState = {
 	files: [],
 	currentDir: null,
+	dirStack: ['Мой Диск'],
 	error: '',
 	popupDisplay: 'none'
 }
@@ -49,6 +50,12 @@ const filesSlice = createSlice({
 	name: 'files',
 	initialState,
 	reducers: {
+		setCurrentDir(state, action) {
+			state.currentDir = action.payload
+		},
+		pushToDirStack(state, action) {
+			state.dirStack.push(action.payload)
+		},
 		setPopupDisplay(state, action) {
 			state.popupDisplay = action.payload
 		}
@@ -68,4 +75,4 @@ const filesSlice = createSlice({
 })
 
 export default filesSlice.reducer
-export const {setPopupDisplay} = filesSlice.actions
+export const {setCurrentDir, pushToDirStack, setPopupDisplay} = filesSlice.actions

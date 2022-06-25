@@ -24,7 +24,7 @@ const App = () => {
 				<Routes>
 					{isAuth ? (
 						<Route>
-							<Route path='/' element={<DiskPage />} />
+							<Route path='/storage' element={<DiskPage />} />
 							<Route path='*' element={<DiskPage />} />
 						</Route>
 					) : (
