@@ -11,8 +11,8 @@ const app = express()
 const PORT = config.get('serverPort')
 
 app.use(cors)
-app.use(authMiddleware)
 app.use(express.json())
+app.use(authMiddleware)
 
 const start = async () => {
 	await connect()

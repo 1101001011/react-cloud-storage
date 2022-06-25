@@ -5,7 +5,7 @@ import File from '../models/file.model';
 class FileController {
     async createDir(req: Request, res: Response) {
         try {
-            const {name, type, parent} = req.body
+            const {name, parent, type} = req.body
             const user = res.locals.user._id
 
             const file = await FileService.createFile({name, type, parent, user})
@@ -17,13 +17,10 @@ class FileController {
                 file.path = `${parentFile.path}\\${file.name}`
                 await FileService.createDir(file)
                 parentFile.children.push(file._id)
-                await parentFile.save()
             }
-            await file.save()
 
             return res.json(file)
         } catch (e) {
-            console.log(e)
             return res.status(400).json(e)
         }
     }
