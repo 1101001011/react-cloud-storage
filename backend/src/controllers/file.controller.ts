@@ -34,7 +34,7 @@ class FileController {
             const parentId = req.query.parent
             const files = await File.find({user: userId, parent: parentId})
 
-            return res.json({files})
+            return res.json(files)
         } catch (e) {
             return res.status(500).json({message: 'Can not get files'})
         }

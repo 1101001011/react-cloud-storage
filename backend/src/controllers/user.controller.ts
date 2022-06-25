@@ -55,14 +55,14 @@ class UserController {
 
     async getAuth(req: Request, res: Response) {
         try {
-            const userId = res.locals.user._id
-            const user = await User.findOne({user: userId})
+            const userId = res.locals?.user?._id
+            const user = await User.findOne({_id: userId})
 
             if (!user) {
-                return res.sendStatus(401).json({message: 'No authorization'})
+                return res.status(401).json({message: 'No authorization'})
             }
 
-            const token = signJWT({ id: user._id }, {expiresIn: '1h'})
+            const token = signJWT({ _id: user._id }, {expiresIn: '1h'})
 
             return res.json({
                 token,
