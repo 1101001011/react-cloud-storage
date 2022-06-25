@@ -18,31 +18,41 @@ export const getFiles = createAsyncThunk<IFile[], string | null>(
 	}
 )
 
-export const createDir = createAsyncThunk<IFile, {name: string, type: string, parent: string | null}>(
-	'files/createdir', async data => {
+export const createDir = createAsyncThunk <IFile, {name: string, parent: string | null}, {rejectValue: string}>(
+	'files/createdir', async (data, {rejectWithValue}) => {
 		try {
-			const {name, type, parent} = data
+			const {name, parent} = data
 			const response = await axios.post(`http://localhost:5000/api/files`, {
 				name,
-				type,
-				parent
+				parent,
+				type: 'dir'
+			}, {
+				headers: {
+					authorization: `Bearer ${localStorage.getItem('token')}`
+				}
 			})
 			return response.data
 		} catch (e: any) {
-			return e.response.data.message
+			return rejectWithValue(e.response.data.message)
 		}
 	}
 )
 
 const initialState: FileState = {
 	files: [],
-	currentDir: ''
+	currentDir: null,
+	error: '',
+	popupDisplay: 'none'
 }
 
 const filesSlice = createSlice({
 	name: 'files',
 	initialState,
-	reducers: {},
+	reducers: {
+		setPopupDisplay(state, action) {
+			state.popupDisplay = action.payload
+		}
+	},
 	extraReducers: builder => {
 		builder
 			.addCase(getFiles.fulfilled, (state, action) => {
@@ -51,7 +61,11 @@ const filesSlice = createSlice({
 			.addCase(createDir.fulfilled, (state, action) => {
 				state.files.push(action.payload)
 			})
+			.addCase(createDir.rejected, (state, action) => {
+				alert(action.payload)
+			})
 	}
 })
 
 export default filesSlice.reducer
+export const {setPopupDisplay} = filesSlice.actions

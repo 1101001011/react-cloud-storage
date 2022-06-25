@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { GiMoonOrbit } from 'react-icons/gi'
+import { BsSafe2Fill } from 'react-icons/bs'
 import { useTypedSelector } from '../../../hooks/useTypedSelector'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
 import { logout } from '../../../store/reducers/userReducer'
@@ -13,7 +13,7 @@ const Navbar = () => {
 		<div>
 			<div className={styles.wrapper}>
 				<div className={styles.logo}>
-					<GiMoonOrbit size={40} className='mr-3 text-primary' />
+					<BsSafe2Fill size={40} className='mr-3 text-violet-600' />
 					<div className={styles.logo__title}>Cybersafe</div>
 				</div>
 				{!isAuth && (

@@ -4,7 +4,7 @@ import styles from './authorization.module.scss'
 const RegistrationPage = () => {
 	return (
 		<div>
-			<img src='images/auth_bg.jpg' alt='' className={styles.bg__img} />
+			<img src='images/auth_bg_blue.jpg' alt='' className={styles.bg__img} />
 			<Modal type='registration' />
 		</div>
 	)

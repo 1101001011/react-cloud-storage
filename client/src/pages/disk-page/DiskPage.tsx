@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {getFiles} from '../../store/reducers/filesReducer';
+import {getFiles, setPopupDisplay} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import Button from '../../components/UI/button/Button';
 import FileList from '../../components/file-list/FileList';
+import Popup from '../../components/UI/popup/Popup';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -15,10 +16,14 @@ const DiskPage = () => {
 
     return (
         <div>
-            <Button onClick={() => {}}>
+            <Button
+                className='btn-primary text-white bg-violet-600 rounded-md'
+                onClick={() => dispatch(setPopupDisplay('block'))}
+            >
                 Создать папку
             </Button>
             <FileList/>
+            <Popup/>
         </div>
     );
 };

@@ -8,7 +8,7 @@ interface FileItemProps {
 
 const FileItem: FC<FileItemProps> = ({file}) => {
     return (
-        <div className='py-3 px-4 flex items-center border border-neutral-300 rounded-md hover:bg-neutral-200'>
+        <div className='py-3 px-4 flex items-center border border-neutral-300 rounded-md hover:bg-neutral-100'>
             <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>
             {file.name}
         </div>

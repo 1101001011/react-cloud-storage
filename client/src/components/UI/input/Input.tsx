@@ -8,7 +8,7 @@ interface InputProps {
 }
 
 const Input: FC<InputProps> = ({ ...props }) => {
-	return <input {...props} className='input' />
+	return <input {...props} className='input my-3' />
 }
 
 export default Input

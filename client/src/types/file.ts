@@ -10,5 +10,7 @@ export interface IFile {
 
 export interface FileState {
     files: IFile[],
-    currentDir: string | null
+    currentDir: null,
+    error: string | undefined
+    popupDisplay: string
 }
