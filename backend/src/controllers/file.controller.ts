@@ -1,6 +1,10 @@
 import {Request, Response} from 'express';
+import config from 'config';
+import fs from 'fs'
+import {UploadedFile} from 'express-fileupload';
 import FileService from '../services/file.service';
 import File from '../models/file.model';
+import User from '../models/user.model';
 
 class FileController {
     async createDir(req: Request, res: Response) {
@@ -36,6 +40,53 @@ class FileController {
             return res.json(files)
         } catch (e) {
             return res.status(500).json({message: 'Can not get files'})
+        }
+    }
+
+    async uploadFile(req: Request, res: Response) {
+        try {
+            const file = req.files?.file as UploadedFile
+            const userId = res.locals.user._id
+            const {parentId} = req.body
+
+            const parent = (await File.findOne({user: userId, _id: parentId}))!
+            const user = (await User.findOne({_id: userId}))!
+
+            if (user.usedSpace + file.size > user.diskSpace) {
+                return res.status(400).json({message: 'No space on the disk'})
+            }
+
+            user.usedSpace = user.usedSpace + file.size
+
+            let path;
+            if (parent) {
+                path = `${config.get('filePath')}\\${user._id}\\${parent.path}\\${file.name}`
+            } else {
+                path = `${config.get('filePath')}\\${user._id}\\${file.name}`
+            }
+
+            if (fs.existsSync(path)) {
+                return res.status(400).json({message: 'File already exists'})
+            }
+            await file.mv(path)
+
+            const type = file.name.split('.').pop()
+            const dbFile = await FileService.createFile({
+                name: file.name,
+                type,
+                size: file.size,
+                path: parent?.path,
+                parent: parent?._id,
+                user: user._id
+            })
+
+            await dbFile.save()
+            await user.save()
+
+            res.json(dbFile)
+        } catch (e) {
+            console.log(e)
+            return res.status(500).json({message: 'Upload file error'})
         }
     }
 }

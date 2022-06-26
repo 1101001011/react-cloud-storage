@@ -1,5 +1,6 @@
 import express from 'express'
 import config from 'config'
+import fileUpload from 'express-fileupload'
 import {cors} from './middlewares/cors.middleware'
 import authMiddleware from './middlewares/auth.middleware';
 import {connect} from './utils/connect.utils';
@@ -10,6 +11,7 @@ import fileRoutes from './routes/file.routes';
 const app = express()
 const PORT = config.get('serverPort')
 
+app.use(fileUpload({}))
 app.use(cors)
 app.use(express.json())
 app.use(authMiddleware)

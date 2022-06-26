@@ -1,8 +1,13 @@
 import mongoose from 'mongoose'
 
+export interface UploadedFile {
+
+}
+
 export interface FileInput {
 	name: string
 	type?: string
+	size?: number
 	path?: string
 	user: mongoose.Schema.Types.ObjectId
 	parent?: mongoose.Schema.Types.ObjectId
@@ -10,7 +15,6 @@ export interface FileInput {
 
 export interface FileDocument extends FileInput, mongoose.Document {
 	accessLink?: string
-	size: number
 	children: [mongoose.Schema.Types.ObjectId]
 }
 
