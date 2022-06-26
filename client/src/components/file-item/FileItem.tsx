@@ -4,6 +4,7 @@ import {RiFolderUserFill} from 'react-icons/ri';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {pushToDirStack, setCurrentDir} from '../../store/reducers/filesReducer';
 import styles from './fileItem.module.scss'
+import {useTypedSelector} from '../../hooks/useTypedSelector';
 
 interface FileItemProps {
     file: IFile
@@ -11,20 +12,18 @@ interface FileItemProps {
 
 const FileItem: FC<FileItemProps> = ({file}) => {
     const dispatch = useAppDispatch()
+    const {dirStack} = useTypedSelector(state => state.files)
 
     function openDirHandler() {
+        const idNum = dirStack[dirStack.length-1].id + 1
         dispatch(setCurrentDir(file._id))
-        dispatch(pushToDirStack(file.name))
-    }
-
-    function openFileHandler() {
-
+        dispatch(pushToDirStack({id: idNum, name: file.name}))
     }
 
     return (
         <div
             className={styles.file}
-            onDoubleClick={file.type === 'dir' ? () => openDirHandler() : () => openFileHandler()}
+            onDoubleClick={file.type === 'dir' ? () => openDirHandler() : () => {}}
             draggable={true}
         >
             <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>

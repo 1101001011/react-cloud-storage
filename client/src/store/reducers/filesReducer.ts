@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {FileState, IFile} from '../../types/file';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {FileState, IDir, IFile} from '../../types/file';
 import axios from 'axios';
 
 export const getFiles = createAsyncThunk<IFile[], string | null>(
@@ -40,8 +40,11 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 
 const initialState: FileState = {
 	files: [],
+	allFiles: [],
 	currentDir: null,
-	dirStack: ['Мой Диск'],
+	dirStack: [
+		{id: 0, name: 'Мой Диск'},
+	],
 	error: '',
 	popupDisplay: 'none'
 }
@@ -53,8 +56,11 @@ const filesSlice = createSlice({
 		setCurrentDir(state, action) {
 			state.currentDir = action.payload
 		},
-		pushToDirStack(state, action) {
+		pushToDirStack(state, action: PayloadAction<IDir>) {
 			state.dirStack.push(action.payload)
+		},
+		sliceDirStack(state, action) {
+			state.dirStack = state.dirStack.slice(0, action.payload)
 		},
 		setPopupDisplay(state, action) {
 			state.popupDisplay = action.payload
@@ -63,6 +69,7 @@ const filesSlice = createSlice({
 	extraReducers: builder => {
 		builder
 			.addCase(getFiles.fulfilled, (state, action) => {
+				state.allFiles.push(...action.payload)
 				state.files = action.payload
 			})
 			.addCase(createDir.fulfilled, (state, action) => {
@@ -75,4 +82,4 @@ const filesSlice = createSlice({
 })
 
 export default filesSlice.reducer
-export const {setCurrentDir, pushToDirStack, setPopupDisplay} = filesSlice.actions
+export const {setCurrentDir, pushToDirStack, sliceDirStack, setPopupDisplay} = filesSlice.actions

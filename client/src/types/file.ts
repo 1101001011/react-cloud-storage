@@ -8,10 +8,16 @@ export interface IFile {
     children: []
 }
 
+export interface IDir {
+    id: number,
+    name: string
+}
+
 export interface FileState {
     files: IFile[],
+    allFiles: IFile[],
     currentDir: null,
-    dirStack: string[]
+    dirStack: IDir[]
     error: string | undefined
     popupDisplay: string
 }

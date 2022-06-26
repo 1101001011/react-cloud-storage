@@ -5,7 +5,7 @@ import {useTypedSelector} from '../../hooks/useTypedSelector';
 import Button from '../../components/UI/button/Button';
 import FileList from '../../components/file-list/FileList';
 import Popup from '../../components/UI/popup/Popup';
-import Breadcrumb from '../../components/UI/breadcrumb/Breadcrumb';
+import Breadcrumbs from '../../components/UI/breadcrumbs/Breadcrumbs';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -23,7 +23,7 @@ const DiskPage = () => {
             >
                 Создать папку
             </Button>
-            <Breadcrumb/>
+            <Breadcrumbs/>
             <FileList/>
             <Popup/>
         </div>
