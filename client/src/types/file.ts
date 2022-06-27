@@ -19,5 +19,6 @@ export interface FileState {
     currentDir: null,
     dirStack: IDir[]
     error: string | undefined
-    popupDisplay: string
+    createPopupDisplay: string
+    uploadPopupDisplay: string
 }

@@ -1,57 +1,45 @@
-import React, {FC, useState} from 'react';
-import Input from '../input/Input';
-import Button from '../button/Button';
+import React, {Dispatch, FC, SetStateAction} from 'react';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
-import {createDir, setPopupDisplay} from '../../../store/reducers/filesReducer';
+import {setCreatePopupDisplay, setUploadPopupDisplay} from '../../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
+import PopupModal from '../popup-modal/PopupModal';
 
-const Popup: FC = () => {
+interface PopupProps {
+    dragEnter: boolean
+    setDragEnter: Dispatch<SetStateAction<boolean>>
+}
+
+const Popup: FC<PopupProps> = ({dragEnter, setDragEnter}) => {
     const dispatch = useAppDispatch()
-    const {popupDisplay, currentDir} = useTypedSelector(state => state.files)
-    const [dirName, setDirName] = useState('')
+    const {createPopupDisplay, uploadPopupDisplay} = useTypedSelector(state => state.files)
+    const modalType = createPopupDisplay === 'block' ? 'create' : 'upload'
 
-    const createDirHandler = () => {
-        dispatch(createDir({name: dirName, parent: currentDir}))
-        dispatch(setPopupDisplay('none'))
-        setDirName('')
+    function dragEnterHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    function dragLeaveHandler(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault()
+        e.stopPropagation()
+        setDragEnter(false)
+        dispatch(setUploadPopupDisplay('none'))
     }
 
     return (
-        <div style={{display: popupDisplay}}>
+        <div
+            style={modalType === 'create' ? {display: createPopupDisplay} : {display: uploadPopupDisplay}}
+            onDragEnter={e => dragEnterHandler(e)}
+            onDragLeave={e => dragLeaveHandler(e)}
+            onDragOver={e => dragEnterHandler(e)}
+        >
             <div
-                className='fixed left-0 top-0 w-full h-full bg-black md:bg-opacity-50'
-                onClick={() => dispatch(setPopupDisplay('none'))}
+                className='fixed left-0 top-0 w-full h-full bg-black md:bg-opacity-30'
+                onClick={() => modalType === 'create'
+                    ? dispatch(setCreatePopupDisplay('none'))
+                    : dispatch(setUploadPopupDisplay('none'))}
             >
-                <div
-                    className='max-w-sm mx-auto mt-72 bg-white rounded-md'
-                    onClick={e => e.stopPropagation()}
-                >
-                    <div className='py-4 px-6 flex flex-col'>
-                        <span className='mb-1 text-2xl text-neutral-600 font-medium'>
-                            Новая папка
-                        </span>
-                        <Input
-                            value={dirName}
-                            type='text'
-                            placeholder='Без названия'
-                            onChange={(e) => setDirName(e.target.value)}
-                        />
-                        <div className='flex mt-4 justify-end'>
-                            <Button
-                                className='btn-primary mr-2 text-neutral-600 hover:bg-neutral-100'
-                                onClick={() => dispatch(setPopupDisplay('none'))}
-                            >
-                                Отмена
-                            </Button>
-                            <Button
-                                className='btn-primary ml-2 text-violet-600 hover:bg-violet-100'
-                                onClick={() => createDirHandler()}
-                            >
-                                Создать
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <PopupModal type={modalType} dragEnter={dragEnter}/>
             </div>
         </div>
     );

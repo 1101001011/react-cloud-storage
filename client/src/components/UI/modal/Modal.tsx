@@ -36,7 +36,7 @@ const Modal: FC<{ type: modalTypes }> = ({ type }) => {
 			</div>
 			{type === 'login' ? (
 				<Button
-					className='btn-primary text-white bg-violet-600 hover:bg-violet-500'
+					className='btn-primary text-white bg-violet-600 hover:bg-violet-500 rounded-md'
 					type='login'
 					onClick={() => dispatch(login({ email, password }))}
 				>
@@ -44,7 +44,7 @@ const Modal: FC<{ type: modalTypes }> = ({ type }) => {
 				</Button>
 			) : (
 				<Button
-					className='btn-primary text-white bg-violet-600 hover:bg-violet-500'
+					className='btn-primary text-white bg-violet-600 hover:bg-violet-500 rounded-md'
 					type='registration'
 					onClick={() => dispatch(registration({ email, password }))}
 				>

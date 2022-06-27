@@ -11,16 +11,13 @@ module.exports = {
 		},
 	},
 	plugins: [
-		plugin(({ addComponents }) => {
+		plugin(({ addComponents, addUtilities }) => {
 			addComponents({
 				'.btn-primary': {
 					display: 'block',
-					// background:
-					// 	'linear-gradient(50deg, var(--primary-dark), var(--primary-light))',
 					padding: '10px 10px',
 					fontSize: '16px',
 					fontWeight: '600',
-					borderRadius: '10px',
 
 					'&:hover': {
 						opacity: '0.9',
@@ -35,6 +32,11 @@ module.exports = {
 						outline: 'none',
 					},
 				},
+			})
+			addUtilities({
+				'.h-550': {
+					height: '550px'
+				}
 			})
 		}),
 	],

@@ -38,6 +38,38 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	}
 )
 
+export const uploadFile = createAsyncThunk<IFile, {file: string, parent: string | null}, {rejectValue: string}>(
+	'files/upload', async (data, {rejectWithValue}) => {
+		try {
+			const {file, parent} = data
+			const formData = new FormData()
+			formData.append('file', file)
+			if (parent) {
+				formData.append('parent', parent)
+			}
+			const response = await axios.post(`http://localhost:5000/api/files/upload`, formData, {
+				headers: {
+					authorization: `Bearer ${localStorage.getItem('token')}`
+				},
+				onUploadProgress: progressEvent => {
+					const totalLength = progressEvent.lengthComputable
+						? progressEvent.total
+						: progressEvent.target.getResponseHeader('content-length')
+						|| progressEvent.target.getResponseHeader('x-decompressed-content-length')
+					console.log('total', totalLength)
+					if (totalLength) {
+						let progress = Math.round((progressEvent.loaded * 100) / totalLength)
+						console.log(progress)
+					}
+				}
+			})
+			return response.data
+		} catch (e: any) {
+			return rejectWithValue(e.response.data.message)
+		}
+	}
+)
+
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
@@ -46,7 +78,8 @@ const initialState: FileState = {
 		{id: 0, name: 'Мой Диск'},
 	],
 	error: '',
-	popupDisplay: 'none'
+	createPopupDisplay: 'none',
+	uploadPopupDisplay: 'none'
 }
 
 const filesSlice = createSlice({
@@ -62,8 +95,11 @@ const filesSlice = createSlice({
 		sliceDirStack(state, action) {
 			state.dirStack = state.dirStack.slice(0, action.payload)
 		},
-		setPopupDisplay(state, action) {
-			state.popupDisplay = action.payload
+		setCreatePopupDisplay(state, action) {
+			state.createPopupDisplay = action.payload
+		},
+		setUploadPopupDisplay(state, action) {
+			state.uploadPopupDisplay = action.payload
 		}
 	},
 	extraReducers: builder => {
@@ -78,8 +114,11 @@ const filesSlice = createSlice({
 			.addCase(createDir.rejected, (state, action) => {
 				alert(action.payload)
 			})
+			.addCase(uploadFile.fulfilled, (state, action) => {
+				state.files.push(action.payload)
+			})
 	}
 })
 
 export default filesSlice.reducer
-export const {setCurrentDir, pushToDirStack, sliceDirStack, setPopupDisplay} = filesSlice.actions
+export const {setCurrentDir, pushToDirStack, sliceDirStack, setCreatePopupDisplay, setUploadPopupDisplay} = filesSlice.actions
