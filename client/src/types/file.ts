@@ -21,4 +21,6 @@ export interface FileState {
     error: string | undefined
     createPopupDisplay: string
     uploadPopupDisplay: string
+    contextMenuType: string
+    contextMenuFile: IFile
 }
