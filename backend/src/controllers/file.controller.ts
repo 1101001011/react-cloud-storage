@@ -86,7 +86,24 @@ class FileController {
             res.json(dbFile)
         } catch (e) {
             console.log(e)
-            return res.status(500).json({message: 'Upload file error'})
+            return res.status(500).json({message: 'Upload error'})
+        }
+    }
+
+    async downloadFile(req: Request, res: Response) {
+        try {
+            const userId = res.locals.user._id
+
+            const file = (await File.findOne({_id: req.query.id, user: userId}))!
+            const path = `${config.get('filePath')}\\${userId}\\${file.path}\\${file.name}`
+
+            if (fs.existsSync(path)) {
+                return res.download(path, file.name)
+            }
+            return res.status(400).json({message: 'Download error (not found)'})
+        } catch (e) {
+            console.log(e)
+            return res.status(500).json({message: 'Download error'})
         }
     }
 }
