@@ -9,6 +9,7 @@ import HomePage from './pages/home-page/HomePage'
 import { auth } from './store/reducers/userReducer'
 import DiskPage from './pages/disk-page/DiskPage';
 
+window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
 	const { isAuth } = useTypedSelector(state => state.user)
 	const dispatch = useAppDispatch()

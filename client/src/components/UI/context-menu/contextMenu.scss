@@ -1,0 +1,8 @@
+.context__menu {
+	@apply fixed w-80 text-neutral-700 text-l bg-white shadow-primary rounded-md z-40;
+	display: none;
+}
+
+.context__menu.active {
+	display: block;
+}

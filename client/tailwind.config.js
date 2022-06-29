@@ -36,6 +36,15 @@ module.exports = {
 			addUtilities({
 				'.h-550': {
 					height: '550px'
+				},
+				'.text-l': {
+					fontSize: '15px'
+				},
+				'.shadow-primary': {
+					boxShadow: '0 6px 12px -1px rgb(0, 0, 0, 0.3)'
+				},
+				'.grid-item': {
+					gridTemplateColumns: '40px 1fr'
 				}
 			})
 		}),
