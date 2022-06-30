@@ -47,9 +47,8 @@ class FileController {
         try {
             const file = req.files?.file as UploadedFile
             const userId = res.locals.user._id
-            const {parentId} = req.body
 
-            const parent = (await File.findOne({user: userId, _id: parentId}))!
+            const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
             const user = (await User.findOne({_id: userId}))!
 
             if (user.usedSpace + file.size > user.diskSpace) {
@@ -68,7 +67,7 @@ class FileController {
             if (fs.existsSync(path)) {
                 return res.status(400).json({message: 'File already exists'})
             }
-            await file.mv(path)
+            file.mv(path)
 
             const type = file.name.split('.').pop()
             let filePath = file.name
@@ -99,7 +98,7 @@ class FileController {
             const userId = res.locals.user._id
 
             const file = (await File.findOne({_id: req.query.id, user: userId}))!
-            const path = `${config.get('filePath')}\\${userId}\\${file.path}`
+            const path = FileService.getPath(file)
 
             if (fs.existsSync(path)) {
                 return res.download(path, file.name)

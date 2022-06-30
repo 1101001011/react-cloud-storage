@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react';
 import Input from '../input/Input';
 import ButtonsGroup from '../buttons-group/ButtonsGroup';
-import {uploadFile} from '../../../store/reducers/filesReducer';
+import {setUploadPopupDisplay, uploadFile} from '../../../store/reducers/filesReducer';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
 
@@ -19,6 +19,7 @@ const PopupModal: FC<PopupModalProps> = ({type, dragEnter}) => {
         // @ts-ignore
         const files = [...e.target.files]
         files.forEach(file => dispatch(uploadFile({file, parent: currentDir})))
+        dispatch(setUploadPopupDisplay('none'))
     }
 
     return (
