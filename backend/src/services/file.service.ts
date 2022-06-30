@@ -1,14 +1,14 @@
-import File, {FileInput} from '../models/file.model';
+import {FileInput} from '../models/file.model';
 import config from 'config';
 import * as fs from 'fs';
 
 class FileService {
-	async createFile(input: FileInput) {
-		return await File.create(input)
+	getPath(file: FileInput) {
+		return `${config.get<string>('filePath')}\\${file.user}\\${file.path}`
 	}
 
 	createDir(file: FileInput) {
-		const filePath = `${config.get<string>('filePath')}\\${file.user}\\${file.path}`
+		const filePath = this.getPath(file)
 
 		return new Promise((resolve, reject) => {
 			try {
@@ -22,6 +22,15 @@ class FileService {
 				return reject({message: 'File error'})
 			}
 		})
+	}
+
+	deleteFile(file: FileInput) {
+		const filePath = this.getPath(file)
+		if (file.type === 'dir') {
+			fs.rmdirSync(filePath)
+		} else {
+			fs.unlinkSync(filePath)
+		}
 	}
 }
 

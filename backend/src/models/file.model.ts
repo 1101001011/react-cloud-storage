@@ -1,9 +1,5 @@
 import mongoose from 'mongoose'
 
-export interface UploadedFile {
-
-}
-
 export interface FileInput {
 	name: string
 	type?: string

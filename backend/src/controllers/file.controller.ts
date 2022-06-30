@@ -10,9 +10,9 @@ class FileController {
     async createDir(req: Request, res: Response) {
         try {
             const {name, parent, type} = req.body
-            const user = res.locals.user._id
+            const userId = res.locals.user._id
 
-            const file = await FileService.createFile({name, type, parent, user})
+            const file = new File({name, type, parent, user: userId})
             const parentFile = await File.findOne({_id: parent})
             if (!parentFile) {
                 file.path = name
@@ -71,11 +71,15 @@ class FileController {
             await file.mv(path)
 
             const type = file.name.split('.').pop()
-            const dbFile = await FileService.createFile({
+            let filePath = file.name
+            if (parent) {
+                filePath = parent.path + '\\' + file.name
+            }
+            const dbFile = new File({
                 name: file.name,
                 type,
                 size: file.size,
-                path: parent?.path,
+                path: filePath,
                 parent: parent?._id,
                 user: user._id
             })
@@ -95,7 +99,7 @@ class FileController {
             const userId = res.locals.user._id
 
             const file = (await File.findOne({_id: req.query.id, user: userId}))!
-            const path = `${config.get('filePath')}\\${userId}\\${file.path}\\${file.name}`
+            const path = `${config.get('filePath')}\\${userId}\\${file.path}`
 
             if (fs.existsSync(path)) {
                 return res.download(path, file.name)
@@ -104,6 +108,26 @@ class FileController {
         } catch (e) {
             console.log(e)
             return res.status(500).json({message: 'Download error'})
+        }
+    }
+
+    async deleteFile(req: Request, res: Response) {
+        try {
+            const userId = res.locals.user._id
+            const file = await File.findOne({_id: req.query.id, user: userId})
+            if (!file) {
+                return res.status(400).json({message: 'file not found'})
+            }
+
+            FileService.deleteFile(file)
+            await file.remove()
+            return res.json({
+                message: 'File was deleted',
+                fileId: file._id
+            })
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Dir is not empty'})
         }
     }
 }
