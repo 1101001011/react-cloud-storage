@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {FileState, IDir, IFile} from '../../types/file';
+import {FileState, IDeleteFileResponse, IDir, IFile} from '../../types/file';
 import axios from 'axios';
 
 export const getFiles = createAsyncThunk<IFile[], string | null>(
@@ -12,7 +12,7 @@ export const getFiles = createAsyncThunk<IFile[], string | null>(
 					}
 				})
 			return response.data
-		} catch (e:any) {
+		} catch (e: any) {
 			return e.response.data.message
 		}
 	}
@@ -94,6 +94,21 @@ export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>
 	}
 )
 
+export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectValue: string}>(
+	'files/delete', async (file, {rejectWithValue}) => {
+		try {
+			const response = await axios.delete(`http://localhost:5000/api/files?id=${file._id}`, {
+				headers: {
+					authorization: `Bearer ${localStorage.getItem('token')}`
+				}
+			})
+			return response.data
+		} catch (e: any) {
+			return rejectWithValue(e.response.data.message)
+		}
+	}
+)
+
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
@@ -152,6 +167,12 @@ const filesSlice = createSlice({
 				state.files.push(action.payload)
 			})
 			.addCase(downloadFile.rejected, (state, action) => {
+				alert(action.payload)
+			})
+			.addCase(deleteFile.fulfilled, (state, action) => {
+				state.files = state.files.filter(file => file._id !== action.payload.fileId)
+			})
+			.addCase(deleteFile.rejected, (state, action) => {
 				alert(action.payload)
 			})
 	}

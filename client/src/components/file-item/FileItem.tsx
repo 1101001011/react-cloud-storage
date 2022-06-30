@@ -27,16 +27,13 @@ const FileItem: FC<FileItemProps> = ({file}) => {
     function openContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
         if (file.type !== 'dir') {
             dispatch(setContextMenuType('file'))
-            dispatch(setContextMenuFile(file))
-            contextMenu.classList.add('active')
-            contextMenu.style.left = String(e.clientX) + 'px'
-            contextMenu.style.top = String(e.clientY) + 'px'
         } else {
             dispatch(setContextMenuType('dir'))
-            contextMenu.classList.add('active')
-            contextMenu.style.left = String(e.clientX) + 'px'
-            contextMenu.style.top = String(e.clientY) + 'px'
         }
+        dispatch(setContextMenuFile(file))
+        contextMenu.classList.add('active')
+        contextMenu.style.left = String(e.clientX) + 'px'
+        contextMenu.style.top = String(e.clientY) + 'px'
     }
 
     return (

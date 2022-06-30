@@ -24,3 +24,8 @@ export interface FileState {
     contextMenuType: string
     contextMenuFile: IFile
 }
+
+export interface IDeleteFileResponse {
+    message: string
+    fileId: string
+}

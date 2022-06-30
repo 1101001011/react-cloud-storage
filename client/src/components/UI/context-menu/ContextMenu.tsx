@@ -9,9 +9,14 @@ import {
 import {RiDeleteBin6Line} from 'react-icons/ri';
 import {BiInfoCircle} from 'react-icons/bi';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
-import {downloadFile, setCreatePopupDisplay, setUploadPopupDisplay} from '../../../store/reducers/filesReducer';
-import './contextMenu.scss'
+import {
+    deleteFile,
+    downloadFile,
+    setCreatePopupDisplay,
+    setUploadPopupDisplay
+} from '../../../store/reducers/filesReducer';
 import {IFile} from '../../../types/file';
+import './contextMenu.scss'
 
 interface ContextMenuProps {
     type: string
@@ -25,6 +30,12 @@ const ContextMenu: FC<ContextMenuProps> = ({type, file}) => {
     function downloadFileHandler(e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation()
         dispatch(downloadFile(file))
+        contextMenu.classList.remove('active')
+    }
+
+    function deleteFileHandler(e: React.MouseEvent<HTMLDivElement>) {
+        e.stopPropagation()
+        dispatch(deleteFile(file))
         contextMenu.classList.remove('active')
     }
 
@@ -53,7 +64,10 @@ const ContextMenu: FC<ContextMenuProps> = ({type, file}) => {
                     Скачать
                 </div>
                 <hr className='my-1.5'/>
-                <div className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'>
+                <div
+                    className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
+                    onClick={e => deleteFileHandler(e)}
+                >
                     <RiDeleteBin6Line size={23} className='text-neutral-500'/>
                     Удалить
                 </div>
@@ -76,7 +90,10 @@ const ContextMenu: FC<ContextMenuProps> = ({type, file}) => {
                         Показать свойства
                     </div>
                     <hr className='my-1.5'/>
-                    <div className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'>
+                    <div
+                        className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
+                        onClick={e => deleteFileHandler(e)}
+                    >
                         <RiDeleteBin6Line size={23} className='text-neutral-500'/>
                         Удалить
                     </div>
