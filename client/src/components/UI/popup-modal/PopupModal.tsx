@@ -4,6 +4,7 @@ import ButtonsGroup from '../buttons-group/ButtonsGroup';
 import {setUploadPopupDisplay, uploadFile} from '../../../store/reducers/filesReducer';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
+import {setSelectedFilesCount} from '../../../store/reducers/uploadReducer';
 
 interface PopupModalProps {
     type: string
@@ -18,7 +19,8 @@ const PopupModal: FC<PopupModalProps> = ({type, dragEnter}) => {
     function fileUploadHandler(e: React.ChangeEvent<HTMLInputElement>) {
         // @ts-ignore
         const files = [...e.target.files]
-        files.forEach(file => dispatch(uploadFile({file, parent: currentDir})))
+        dispatch(setSelectedFilesCount(files.length))
+        files.forEach(file => dispatch(uploadFile(file, currentDir)))
         dispatch(setUploadPopupDisplay('none'))
     }
 

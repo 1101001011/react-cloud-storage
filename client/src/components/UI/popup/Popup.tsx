@@ -3,6 +3,7 @@ import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {setCreatePopupDisplay, setUploadPopupDisplay, uploadFile} from '../../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
 import PopupModal from '../popup-modal/PopupModal';
+import {setSelectedFilesCount} from '../../../store/reducers/uploadReducer';
 
 interface PopupProps {
     dragEnter: boolean
@@ -30,7 +31,8 @@ const Popup: FC<PopupProps> = ({dragEnter, setDragEnter}) => {
         e.preventDefault()
         e.stopPropagation()
         let files = [...e.dataTransfer.files]
-        files.forEach(file => dispatch(uploadFile({file, parent: currentDir})))
+        dispatch(setSelectedFilesCount(files.length))
+        files.forEach(file => dispatch(uploadFile(file, currentDir)))
         dispatch(setUploadPopupDisplay('none'))
     }
 

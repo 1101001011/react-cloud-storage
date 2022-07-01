@@ -1,6 +1,8 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {FileState, IDeleteFileResponse, IDir, IFile} from '../../types/file';
 import axios from 'axios';
+import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
+import {IUploadFile} from '../../types/upload';
 
 export const getFiles = createAsyncThunk<IFile[], string | null>(
 	'files/get', async dirId => {
@@ -38,15 +40,21 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	}
 )
 
-export const uploadFile = createAsyncThunk<IFile, {file: File | string, parent: string | null}, {rejectValue: string}>(
-	'files/upload', async (data, {rejectWithValue}) => {
+export const uploadFile = (file: File, dirId: string) => {
+	return async (dispatch: any) => {
 		try {
-			const {file, parent} = data
 			const formData = new FormData()
 			formData.append('file', file)
-			if (parent) {
-				formData.append('parent', parent)
+			if (dirId) formData.append('parent', dirId)
+
+			const upFile: IUploadFile = {
+				name: file.name,
+				progress: 0,
+				id: file.size
 			}
+			dispatch(showUploadLoader())
+			dispatch(addUploadFile(upFile))
+
 			const response = await axios.post(`http://localhost:5000/api/files/upload`, formData, {
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`
@@ -55,20 +63,18 @@ export const uploadFile = createAsyncThunk<IFile, {file: File | string, parent: 
 					const totalLength = progressEvent.lengthComputable
 						? progressEvent.total
 						: progressEvent.target.getResponseHeader('content-length')
-						|| progressEvent.target.getResponseHeader('x-decompressed-content-length')
-					console.log('total', totalLength)
+						|| progressEvent.target.getResponseHeader('x-decompressed-content-length');
 					if (totalLength) {
-						let progress = Math.round((progressEvent.loaded * 100) / totalLength)
-						console.log(progress)
+						const newUpFile = {...upFile, progress: (Math.round((progressEvent.loaded * 100) / totalLength))}
+						dispatch(changeUploadFile(newUpFile))
 					}
 				}
-			})
-			return response.data
-		} catch (e: any) {
-			return rejectWithValue(e.response.data.message)
-		}
+			});
+			dispatch(addFile(response.data))
+		} catch (e: any) {}
 	}
-)
+}
+
 
 export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>(
 	'files/download', async (file, {rejectWithValue}) => {
@@ -112,7 +118,7 @@ export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectVa
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
-	currentDir: null,
+	currentDir: '',
 	dirStack: [
 		{id: 0, name: 'Мой Диск'},
 	],
@@ -129,6 +135,9 @@ const filesSlice = createSlice({
 	name: 'files',
 	initialState,
 	reducers: {
+		addFile(state, action) {
+			state.files.push(action.payload)
+		},
 		setCurrentDir(state, action) {
 			state.currentDir = action.payload
 		},
@@ -163,9 +172,6 @@ const filesSlice = createSlice({
 			.addCase(createDir.rejected, (state, action) => {
 				alert(action.payload)
 			})
-			.addCase(uploadFile.fulfilled, (state, action) => {
-				state.files.push(action.payload)
-			})
 			.addCase(downloadFile.rejected, (state, action) => {
 				alert(action.payload)
 			})
@@ -180,6 +186,7 @@ const filesSlice = createSlice({
 
 export default filesSlice.reducer
 export const {
+	addFile,
 	setCurrentDir,
 	pushToDirStack,
 	sliceDirStack,

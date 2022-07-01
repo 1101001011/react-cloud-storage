@@ -37,6 +37,9 @@ module.exports = {
 				'.h-550': {
 					height: '550px'
 				},
+				'.h-loader': {
+					height: '3px'
+				},
 				'.text-l': {
 					fontSize: '15px'
 				},
