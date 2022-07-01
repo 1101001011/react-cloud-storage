@@ -12,6 +12,7 @@ import FileList from '../../components/file-list/FileList';
 import Popup from '../../components/UI/popup/Popup';
 import Breadcrumbs from '../../components/UI/breadcrumbs/Breadcrumbs';
 import ContextMenu from '../../components/UI/context-menu/ContextMenu';
+import FileUploadPopup from '../../components/UI/file-upload-popup/FileUploadPopup';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -59,7 +60,7 @@ const DiskPage = () => {
         >
             <div className='flex'>
                 <Button
-                    className='btn-primary mr-4 px-8 text-white bg-violet-600 rounded-md'
+                    className='btn-primary mr-3 px-8 text-white bg-violet-600 rounded-md'
                     onClick={() => dispatch(setCreatePopupDisplay('block'))}
                 >
                     Создать папку
@@ -78,6 +79,7 @@ const DiskPage = () => {
             </p>
             <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
             <ContextMenu type={contextMenuType} file={contextMenuFile}/>
+            <FileUploadPopup/>
         </div>
     );
 };
