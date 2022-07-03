@@ -56,7 +56,7 @@ const DiskPage = () => {
             onDragOver={e => dragLeaveHandler(e)}
             onContextMenu={e => openContextMenuHandler(e)}
             onClick={() => contextMenu.classList.remove('active')}
-            className='h-550 flex flex-col'
+            className='mb-20 h-auto h-min-550 flex flex-col'
         >
             <div className='flex'>
                 <Button
@@ -74,7 +74,7 @@ const DiskPage = () => {
             </div>
             <Breadcrumbs/>
             <FileList/>
-            <p className='mt-auto text-xs text-center font-medium text-neutral-400'>
+            <p className='mt-8 text-xs text-center font-medium text-neutral-400'>
                 Перетащите файлы сюда, чтобы добавить их на Диск
             </p>
             <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>

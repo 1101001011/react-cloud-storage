@@ -5,10 +5,11 @@ export interface IFile {
     size: number
     path: string
     user: string
+    parent?: string
     children: []
 }
 
-export interface IDir {
+export interface IBreadcrumbsDir {
     id: number,
     name: string
 }
@@ -16,8 +17,8 @@ export interface IDir {
 export interface FileState {
     files: IFile[],
     allFiles: IFile[],
-    currentDir: string,
-    dirStack: IDir[]
+    currentDir: null,
+    dirStack: IBreadcrumbsDir[]
     error: string | undefined
     createPopupDisplay: string
     uploadPopupDisplay: string

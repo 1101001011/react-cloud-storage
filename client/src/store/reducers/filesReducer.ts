@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {FileState, IDeleteFileResponse, IDir, IFile} from '../../types/file';
+import {FileState, IDeleteFileResponse, IBreadcrumbsDir, IFile} from '../../types/file';
 import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
@@ -24,9 +24,8 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	'files/createdir', async (data, {rejectWithValue}) => {
 		try {
 			const {name, parent} = data
-			const response = await axios.post(`http://localhost:5000/api/files?id=${parent}`, {
-				name,
-				type: 'dir'
+			const response = await axios.post(`http://localhost:5000/api/files`, {
+				name, parent
 			}, {
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`
@@ -39,7 +38,7 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	}
 )
 
-export const uploadFile = (file: File, dirId: string) => {
+export const uploadFile = (file: File, dirId: string | null) => {
 	return async (dispatch: any) => {
 		try {
 			const formData = new FormData()
@@ -117,7 +116,7 @@ export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectVa
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
-	currentDir: '',
+	currentDir: null,
 	dirStack: [
 		{id: 0, name: 'Мой Диск'},
 	],
@@ -140,7 +139,7 @@ const filesSlice = createSlice({
 		setCurrentDir(state, action) {
 			state.currentDir = action.payload
 		},
-		pushToDirStack(state, action: PayloadAction<IDir>) {
+		pushToDirStack(state, action: PayloadAction<IBreadcrumbsDir>) {
 			state.dirStack.push(action.payload)
 		},
 		sliceDirStack(state, action) {

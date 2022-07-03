@@ -9,17 +9,16 @@ import User from '../models/user.model';
 class FileController {
     async createDir(req: Request, res: Response) {
         try {
-            const {name, type} = req.body
-            const parent = req.params.id
+            const {name, parent} = req.body
             const userId = res.locals.user._id
 
-            const file = new File({name, type, parent, user: userId})
+            const file = new File({name, type: 'dir', parent, user: userId})
             const parentFile = await File.findOne({_id: parent})
             if (!parentFile) {
                 file.path = name
                 await FileService.createDir(file)
             } else {
-                file.path = `${parentFile.path}\\${file.name}`
+                file.path = parentFile.path + '\\' + file.name
                 await FileService.createDir(file)
                 parentFile.children.push(file._id)
                 await parentFile.save()
@@ -34,9 +33,21 @@ class FileController {
 
     async getFiles(req: Request, res: Response) {
         try {
+            const {sort, parent} = req.query
             const userId = res.locals.user._id
-            const parentId = req.query.parent
-            const files = await File.find({user: userId, parent: parentId})
+
+            let files
+            switch (sort) {
+                case 'name':
+                    files = await File.find({user: userId, parent}).sort({name: 1})
+                    break
+                case 'date':
+                    files = await File.find({user: userId, parent}).sort({date: 1})
+                    break
+                default:
+                    files = await File.find({user: userId, parent})
+                    break
+            }
 
             return res.json(files)
         } catch (e) {
@@ -49,8 +60,8 @@ class FileController {
             const file = req.files?.file as UploadedFile
             const userId = res.locals.user._id
 
-            const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
             const user = (await User.findOne({_id: userId}))!
+            const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
 
             if (user.usedSpace + file.size > user.diskSpace) {
                 return res.status(400).json({message: 'No space on the disk'})
@@ -114,6 +125,7 @@ class FileController {
     async deleteFile(req: Request, res: Response) {
         try {
             const userId = res.locals.user._id
+
             const file = await File.findOne({_id: req.query.id, user: userId})
             if (!file) {
                 return res.status(400).json({message: 'file not found'})

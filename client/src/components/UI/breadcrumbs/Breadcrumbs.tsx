@@ -3,14 +3,14 @@ import { useAppDispatch } from '../../../hooks/useAppDispatch'
 import { useTypedSelector } from '../../../hooks/useTypedSelector'
 import { IoIosArrowForward } from 'react-icons/io'
 import {setCurrentDir, sliceDirStack} from '../../../store/reducers/filesReducer';
-import {IDir} from '../../../types/file';
+import {IBreadcrumbsDir} from '../../../types/file';
 import styles from './breadcrumbs.module.scss'
 
 const Breadcrumbs = () => {
 	const dispatch = useAppDispatch()
 	const { dirStack, allFiles } = useTypedSelector((state) => state.files)
 
-	const changeDirHandler = (dir: IDir) => {
+	const changeDirHandler = (dir: IBreadcrumbsDir) => {
 		if (dir.name === 'Мой Диск') {
 			dispatch(setCurrentDir(''))
 		} else {
