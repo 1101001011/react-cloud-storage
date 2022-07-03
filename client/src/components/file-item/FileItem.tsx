@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {IFile} from '../../types/file';
 import {RiFolderUserFill} from 'react-icons/ri';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {pushToDirStack, setContextMenuFile, setContextMenuType, setCurrentDir} from '../../store/reducers/filesReducer';
+import {pushToDirStack, setContextMenuFile, setCurrentDir} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {IoMdImage} from 'react-icons/io';
 import './fileItem.scss'
@@ -14,7 +14,9 @@ interface FileItemProps {
 const FileItem: FC<FileItemProps> = ({file}) => {
     const dispatch = useAppDispatch()
     const {dirStack} = useTypedSelector(state => state.files)
-    const contextMenu = document.querySelector('#context-menu') as HTMLElement
+    const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
+    const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
+    const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
 
     function openDirHandler(file: IFile) {
         if (file.type === 'dir') {
@@ -25,15 +27,22 @@ const FileItem: FC<FileItemProps> = ({file}) => {
     }
 
     function openContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        if (file.type !== 'dir') {
-            dispatch(setContextMenuType('file'))
-        } else {
-            dispatch(setContextMenuType('dir'))
+        if (defaultContextMenu.classList.contains('active')) {
+            defaultContextMenu.classList.remove('active')
         }
-        dispatch(setContextMenuFile(file))
-        contextMenu.classList.add('active')
-        contextMenu.style.left = String(e.clientX) + 'px'
-        contextMenu.style.top = String(e.clientY) + 'px'
+        if (file.type !== 'dir') {
+            dispatch(setContextMenuFile(file))
+            dirContextMenu.classList.remove('active')
+            fileContextMenu.classList.add('active')
+            fileContextMenu.style.left = String(e.clientX) + 'px'
+            fileContextMenu.style.top = String(e.clientY) + 'px'
+        } else {
+            dispatch(setContextMenuFile(file))
+            fileContextMenu.classList.remove('active')
+            dirContextMenu.classList.add('active')
+            dirContextMenu.style.left = String(e.clientX) + 'px'
+            dirContextMenu.style.top = String(e.clientY) + 'px'
+        }
     }
 
     return (

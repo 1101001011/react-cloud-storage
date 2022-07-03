@@ -123,7 +123,6 @@ const initialState: FileState = {
 	error: '',
 	createPopupDisplay: 'none',
 	uploadPopupDisplay: 'none',
-	contextMenuType: '',
 	contextMenuFile: {
 		_id: '', type: '', name: '', user: '', path: '', size: 0, children: []
 	}
@@ -150,9 +149,6 @@ const filesSlice = createSlice({
 		},
 		setUploadPopupDisplay(state, action) {
 			state.uploadPopupDisplay = action.payload
-		},
-		setContextMenuType(state, action) {
-			state.contextMenuType = action.payload
 		},
 		setContextMenuFile(state, action) {
 			state.contextMenuFile = action.payload
@@ -190,6 +186,5 @@ export const {
 	sliceDirStack,
 	setCreatePopupDisplay,
 	setUploadPopupDisplay,
-	setContextMenuType,
 	setContextMenuFile
 } = filesSlice.actions

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {
     getFiles,
-    setContextMenuType,
     setCreatePopupDisplay,
     setUploadPopupDisplay
 } from '../../store/reducers/filesReducer';
@@ -11,14 +10,18 @@ import Button from '../../components/UI/button/Button';
 import FileList from '../../components/file-list/FileList';
 import Popup from '../../components/UI/popup/Popup';
 import Breadcrumbs from '../../components/UI/breadcrumbs/Breadcrumbs';
-import ContextMenu from '../../components/UI/context-menu/ContextMenu';
 import FileUploadPopup from '../../components/UI/file-upload-popup/FileUploadPopup';
+import DefaultContextMenu from '../../components/UI/context-menu/DefaultContextMenu';
+import FileContextMenu from '../../components/UI/context-menu/FileContextMenu';
+import DirContextMenu from '../../components/UI/context-menu/DirContextMenu';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
-    const {currentDir, uploadPopupDisplay, contextMenuType, contextMenuFile} = useTypedSelector(state => state.files)
+    const {currentDir, uploadPopupDisplay, contextMenuFile} = useTypedSelector(state => state.files)
     const [dragEnter, setDragEnter] = useState(false)
-    const contextMenu = document.querySelector('#context-menu') as HTMLElement
+    const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
+    const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
+    const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
 
     useEffect(() => {
         dispatch(getFiles(currentDir))
@@ -42,11 +45,18 @@ const DiskPage = () => {
         const fileItems = document.getElementsByClassName('file__item')
 
         if (!(Array.from(fileItems).includes(e.target as Element))) {
-            dispatch(setContextMenuType('page'))
-            contextMenu.classList.add('active')
-            contextMenu.style.left = String(e.clientX) + 'px'
-            contextMenu.style.top = String(e.clientY) + 'px'
+            fileContextMenu.classList.remove('active')
+            dirContextMenu.classList.remove('active')
+            defaultContextMenu.classList.add('active')
+            defaultContextMenu.style.left = String(e.clientX) + 'px'
+            defaultContextMenu.style.top = String(e.clientY) + 'px'
         }
+    }
+
+    function closeContextMenu() {
+        defaultContextMenu.classList.remove('active')
+        fileContextMenu.classList.remove('active')
+        dirContextMenu.classList.remove('active')
     }
 
     return (
@@ -55,7 +65,7 @@ const DiskPage = () => {
             onDragLeave={e => dragLeaveHandler(e)}
             onDragOver={e => dragLeaveHandler(e)}
             onContextMenu={e => openContextMenuHandler(e)}
-            onClick={() => contextMenu.classList.remove('active')}
+            onClick={() => closeContextMenu()}
             className='mb-20 h-auto h-min-550 flex flex-col'
         >
             <div className='flex'>
@@ -78,7 +88,9 @@ const DiskPage = () => {
                 Перетащите файлы сюда, чтобы добавить их на Диск
             </p>
             <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
-            <ContextMenu type={contextMenuType} file={contextMenuFile}/>
+            <DefaultContextMenu/>
+            <FileContextMenu file={contextMenuFile}/>
+            <DirContextMenu file={contextMenuFile}/>
             <FileUploadPopup/>
         </div>
     );
