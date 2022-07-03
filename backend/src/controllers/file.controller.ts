@@ -9,7 +9,8 @@ import User from '../models/user.model';
 class FileController {
     async createDir(req: Request, res: Response) {
         try {
-            const {name, parent, type} = req.body
+            const {name, type} = req.body
+            const parent = req.params.id
             const userId = res.locals.user._id
 
             const file = new File({name, type, parent, user: userId})

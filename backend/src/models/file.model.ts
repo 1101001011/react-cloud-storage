@@ -10,6 +10,7 @@ export interface FileInput {
 }
 
 export interface FileDocument extends FileInput, mongoose.Document {
+	date: Date
 	accessLink?: string
 	children: [mongoose.Schema.Types.ObjectId]
 }
@@ -20,6 +21,7 @@ const fileModel = new mongoose.Schema({
 	accessLink: { type: String },
 	size: { type: Number, default: 0 },
 	path: { type: String, default: '' },
+	date: { type: Date, default: Date.now() },
 	user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	parent: { type: mongoose.Schema.Types.ObjectId, ref: 'File' },
 	children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],

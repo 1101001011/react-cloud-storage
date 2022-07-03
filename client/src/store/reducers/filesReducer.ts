@@ -24,9 +24,8 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	'files/createdir', async (data, {rejectWithValue}) => {
 		try {
 			const {name, parent} = data
-			const response = await axios.post(`http://localhost:5000/api/files`, {
+			const response = await axios.post(`http://localhost:5000/api/files?id=${parent}`, {
 				name,
-				parent,
 				type: 'dir'
 			}, {
 				headers: {
