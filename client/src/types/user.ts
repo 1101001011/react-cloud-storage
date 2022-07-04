@@ -10,6 +10,7 @@ export interface IUser {
 export interface UserState {
 	currentUser: {}
 	isAuth: boolean
+	isLoader: boolean
 }
 
 export interface IUserLogin {

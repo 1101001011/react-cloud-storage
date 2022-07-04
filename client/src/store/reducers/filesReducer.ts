@@ -4,10 +4,10 @@ import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
 
-export const getFiles = createAsyncThunk<IFile[], {currentDir: string | null, sortValue: string | null}>(
-	'files/get', async data => {
+export const getFiles = ({currentDir, sortValue}: {currentDir: string | null, sortValue: string | null}) => {
+	return async (dispatch: any) => {
 		try {
-			const {currentDir, sortValue} = data
+			dispatch(showLoader())
 			let url = `http://localhost:5000/api/files`
 			if (currentDir) {
 				url = `http://localhost:5000/api/files?parent=${currentDir}`
@@ -24,12 +24,12 @@ export const getFiles = createAsyncThunk<IFile[], {currentDir: string | null, so
 						authorization: `Bearer ${localStorage.getItem('token')}`
 					}
 				})
-			return response.data
+			dispatch(getAllFiles(response.data))
 		} catch (e: any) {
 			return e.response.data.message
 		}
 	}
-)
+}
 
 export const createDir = createAsyncThunk <IFile, {name: string, parent: string | null}, {rejectValue: string}>(
 	'files/createdir', async (data, {rejectWithValue}) => {
@@ -136,13 +136,19 @@ const initialState: FileState = {
 	uploadPopupDisplay: 'none',
 	contextMenuFile: {
 		_id: '', type: '', name: '', user: '', path: '', size: 0, children: []
-	}
+	},
+	isLoader: false
 }
 
 const filesSlice = createSlice({
 	name: 'files',
 	initialState,
 	reducers: {
+		getAllFiles(state, action) {
+			state.isLoader = false
+			state.allFiles.push(...action.payload)
+			state.files = action.payload
+		},
 		addFile(state, action) {
 			state.files.push(action.payload)
 		},
@@ -163,14 +169,13 @@ const filesSlice = createSlice({
 		},
 		setContextMenuFile(state, action) {
 			state.contextMenuFile = action.payload
+		},
+		showLoader(state) {
+			state.isLoader = true
 		}
 	},
 	extraReducers: builder => {
 		builder
-			.addCase(getFiles.fulfilled, (state, action) => {
-				state.allFiles.push(...action.payload)
-				state.files = action.payload
-			})
 			.addCase(createDir.fulfilled, (state, action) => {
 				state.files.push(action.payload)
 			})
@@ -191,11 +196,13 @@ const filesSlice = createSlice({
 
 export default filesSlice.reducer
 export const {
+	getAllFiles,
 	addFile,
 	setCurrentDir,
 	pushToDirStack,
 	sliceDirStack,
 	setCreatePopupDisplay,
 	setUploadPopupDisplay,
-	setContextMenuFile
+	setContextMenuFile,
+	showLoader
 } = filesSlice.actions

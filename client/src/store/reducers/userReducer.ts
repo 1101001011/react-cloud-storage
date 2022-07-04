@@ -31,25 +31,26 @@ export const login = createAsyncThunk<IUserLogin, { email: string; password: str
 	}
 })
 
-export const auth = createAsyncThunk<IUserLogin, void, { rejectValue: string }>(
-	'user/auth',
-	async (_, { rejectWithValue }) => {
+export const auth = () => {
+	return async (dispatch: any) => {
 		try {
+			if (localStorage.getItem('token')) dispatch(showLoader())
 			const response = await axios.get('http://localhost:5000/api/auth', {
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			})
-			return response.data
-		} catch (e: any) {
-			return rejectWithValue(e.response.data.message)
+			dispatch(authFulfilled(response.data))
+		} catch (e) {
+			dispatch(authRejected())
 		}
 	}
-)
+}
 
 const initialState: UserState = {
 	currentUser: {},
 	isAuth: false,
+	isLoader: false
 }
 
 const userSlice = createSlice({
@@ -61,6 +62,18 @@ const userSlice = createSlice({
 			state.isAuth = false
 			localStorage.removeItem('token')
 		},
+		authFulfilled(state, action) {
+			state.currentUser = action.payload.user
+			state.isLoader = false
+			state.isAuth = true
+			localStorage.setItem('token', action.payload.token)
+		},
+		authRejected() {
+			localStorage.removeItem('token')
+		},
+		showLoader(state) {
+			state.isLoader = true
+		}
 	},
 	extraReducers: builder => {
 		builder
@@ -69,14 +82,8 @@ const userSlice = createSlice({
 				state.isAuth = true
 				localStorage.setItem('token', action.payload.token)
 			})
-			.addCase(auth.fulfilled, (state, action) => {
-				state.currentUser = action.payload.user
-				state.isAuth = true
-				localStorage.setItem('token', action.payload.token)
-			})
-			.addCase(auth.rejected, () => localStorage.removeItem('token'))
 	},
 })
 
 export default userSlice.reducer
-export const { logout } = userSlice.actions
+export const { logout, authFulfilled, authRejected, showLoader } = userSlice.actions

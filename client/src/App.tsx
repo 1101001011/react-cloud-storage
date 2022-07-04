@@ -11,12 +11,25 @@ import DiskPage from './pages/disk-page/DiskPage';
 
 window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
-	const { isAuth } = useTypedSelector(state => state.user)
+	const { isAuth, isLoader } = useTypedSelector(state => state.user)
 	const dispatch = useAppDispatch()
 
 	useEffect(() => {
 		dispatch(auth())
 	}, [dispatch])
+
+	if (isLoader) {
+		return (
+			<div className='text-center mt-80'>
+				<div className="lds-ellipsis">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+		)
+	}
 
 	return (
 		<BrowserRouter>

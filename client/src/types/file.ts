@@ -23,6 +23,7 @@ export interface FileState {
     createPopupDisplay: string
     uploadPopupDisplay: string
     contextMenuFile: IFile
+    isLoader: boolean
 }
 
 export interface IDeleteFileResponse {

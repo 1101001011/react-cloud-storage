@@ -8,6 +8,7 @@ import './fileList.scss'
 
 const FileList = ({sortValue}: {sortValue: string | null}) => {
     const allFiles = useTypedSelector(state => state.files.files)
+    const isLoader = useTypedSelector(state => state.files.isLoader)
     const dirs = allFiles.filter(file => file.type === 'dir')
     const files = allFiles.filter(file => file.type !== 'dir')
     const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
@@ -16,6 +17,19 @@ const FileList = ({sortValue}: {sortValue: string | null}) => {
         const sortButton = document.querySelector('.sort__btn') as HTMLElement
         sortContextMenu.classList.add('active')
         calcLocationSortContextMenu(sortButton, sortContextMenu)
+    }
+
+    if (isLoader) {
+        return (
+            <div className='text-center mt-40'>
+                <div className="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        )
     }
 
     if (allFiles.length === 0) {
