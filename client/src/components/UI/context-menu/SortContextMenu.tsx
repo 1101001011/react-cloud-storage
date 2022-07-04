@@ -1,26 +1,38 @@
-import React from 'react';
-import {setCreatePopupDisplay, setUploadPopupDisplay} from '../../../store/reducers/filesReducer';
-import {useAppDispatch} from '../../../hooks/useAppDispatch';
+import React, {Dispatch, FC, SetStateAction} from 'react';
 import {AiOutlineCheck} from 'react-icons/ai';
 import './contextMenu.scss'
 
-const SortContextMenu = () => {
-    const dispatch = useAppDispatch()
+interface SortContextMenuProps {
+    sortValue: string | null
+    setSortValue: Dispatch<SetStateAction<string | null>>
+}
 
+const SortContextMenu: FC<SortContextMenuProps> = ({sortValue, setSortValue}) => {
     return (
-        <div className='context__menu' id='sort-context-menu'>
+        <div
+            className='context__menu'
+            id='sort-context-menu'
+            onClick={(e) => setSortValue((e.target as HTMLDivElement).getAttribute('data-value-type'))}
+        >
             <div
                 className='grid grid-item px-4 py-1 mt-4 hover:bg-neutral-100 cursor-pointer'
-                onClick={() => dispatch(setCreatePopupDisplay('block'))}
+                data-value-type='name'
             >
-                <AiOutlineCheck size={20}/>
+                {(!sortValue || sortValue === 'name') ? <AiOutlineCheck size={20}/> : <div></div>}
                 По названию
             </div>
             <div
-                className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
-                onClick={() => dispatch(setUploadPopupDisplay('block'))}
+                className='grid grid-item px-4 py-1 hover:bg-neutral-100 cursor-pointer'
+                data-value-type='type'
             >
-                <div></div>
+                {sortValue === 'type' ? <AiOutlineCheck size={20}/> : <div></div>}
+                По типу
+            </div>
+            <div
+                className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
+                data-value-type='date'
+            >
+                {sortValue === 'date' ? <AiOutlineCheck size={20}/> : <div></div>}
                 По дате
             </div>
         </div>

@@ -4,11 +4,22 @@ import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
 
-export const getFiles = createAsyncThunk<IFile[], string | null>(
-	'files/get', async dirId => {
+export const getFiles = createAsyncThunk<IFile[], {currentDir: string | null, sortValue: string | null}>(
+	'files/get', async data => {
 		try {
+			const {currentDir, sortValue} = data
+			let url = `http://localhost:5000/api/files`
+			if (currentDir) {
+				url = `http://localhost:5000/api/files?parent=${currentDir}`
+			}
+			if (sortValue) {
+				url = `http://localhost:5000/api/files?sort=${sortValue}`
+			}
+			if (currentDir && sortValue) {
+				url = `http://localhost:5000/api/files?parent=${currentDir}&sort=${sortValue}`
+			}
 			const response =
-				await axios.get(`http://localhost:5000/api/files${dirId ? '?parent='+dirId : ''}`, {
+				await axios.get(url, {
 					headers: {
 						authorization: `Bearer ${localStorage.getItem('token')}`
 					}

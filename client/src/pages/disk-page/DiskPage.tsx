@@ -22,14 +22,15 @@ const DiskPage = () => {
     const dispatch = useAppDispatch()
     const {currentDir, uploadPopupDisplay, contextMenuFile} = useTypedSelector(state => state.files)
     const [dragEnter, setDragEnter] = useState(false)
+    const [sortValue, setSortValue] = useState<string | null>('name')
     const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
     const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
     const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
     const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
 
     useEffect(() => {
-        dispatch(getFiles(currentDir))
-    }, [currentDir])
+        dispatch(getFiles({currentDir, sortValue}))
+    }, [currentDir, sortValue])
 
     function dragEnterHandler(e: React.DragEvent<HTMLDivElement>) {
         e.preventDefault()
@@ -92,13 +93,12 @@ const DiskPage = () => {
             </div>
             <Breadcrumbs/>
             <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
-                <FileList/>
-
+                <FileList sortValue={sortValue}/>
                 <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
                 <DefaultContextMenu/>
                 <FileContextMenu file={contextMenuFile}/>
                 <DirContextMenu file={contextMenuFile}/>
-                <SortContextMenu/>
+                <SortContextMenu sortValue={sortValue} setSortValue={setSortValue}/>
                 <FileUploadPopup/>
             </div>
         </div>

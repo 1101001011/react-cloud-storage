@@ -6,7 +6,7 @@ import {TiFlowSwitch} from 'react-icons/ti';
 import {calcLocationSortContextMenu} from '../../utils/calcLocationSortContextMenu';
 import './fileList.scss'
 
-const FileList = () => {
+const FileList = ({sortValue}: {sortValue: string | null}) => {
     const allFiles = useTypedSelector(state => state.files.files)
     const dirs = allFiles.filter(file => file.type === 'dir')
     const files = allFiles.filter(file => file.type !== 'dir')
@@ -42,7 +42,9 @@ const FileList = () => {
                             className='sort__btn'
                             onClick={() => openSortContextMenu()}
                         >
-                            Названиe
+                            {(!sortValue || sortValue === 'name') && 'Название'}
+                            {sortValue === 'type' && 'Тип'}
+                            {sortValue === 'date' && 'Дата'}
                         </span>
                         <IoMdArrowUp size={18} className='ml-3'/>
                     </div>
