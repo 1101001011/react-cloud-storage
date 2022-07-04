@@ -34,8 +34,9 @@ module.exports = {
 				},
 			})
 			addUtilities({
-				'.h-min-550': {
-					minHeight: '550px'
+				'.h-max-min-540': {
+					maxHeight: '540px',
+					minHeight: '540px'
 				},
 				'.h-loader': {
 					height: '3px'

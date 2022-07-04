@@ -14,6 +14,9 @@ import FileUploadPopup from '../../components/UI/file-upload-popup/FileUploadPop
 import DefaultContextMenu from '../../components/UI/context-menu/DefaultContextMenu';
 import FileContextMenu from '../../components/UI/context-menu/FileContextMenu';
 import DirContextMenu from '../../components/UI/context-menu/DirContextMenu';
+import SortContextMenu from '../../components/UI/context-menu/SortContextMenu';
+import {calcLocation} from '../../utils/calcLocation';
+import './diskPage.scss'
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -22,6 +25,7 @@ const DiskPage = () => {
     const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
     const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
     const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
+    const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
 
     useEffect(() => {
         dispatch(getFiles(currentDir))
@@ -42,21 +46,26 @@ const DiskPage = () => {
     }
 
     function openContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        const fileItems = document.getElementsByClassName('file__item')
+        const target = e.target as Element
 
-        if (!(Array.from(fileItems).includes(e.target as Element))) {
+        if (!target.classList.contains('file__item') && target.tagName !== 'path' && target.tagName !== 'svg') {
             fileContextMenu.classList.remove('active')
             dirContextMenu.classList.remove('active')
+            sortContextMenu.classList.remove('active')
             defaultContextMenu.classList.add('active')
-            defaultContextMenu.style.left = String(e.clientX) + 'px'
-            defaultContextMenu.style.top = String(e.clientY) + 'px'
+            calcLocation(e, defaultContextMenu)
         }
     }
 
-    function closeContextMenu() {
+    function closeContextMenu(e: React.MouseEvent<HTMLDivElement>) {
         defaultContextMenu.classList.remove('active')
         fileContextMenu.classList.remove('active')
         dirContextMenu.classList.remove('active')
+        const sortItems = document.getElementsByClassName('sort__btn')
+
+        if (!(Array.from(sortItems).includes(e.target as Element))) {
+            sortContextMenu.classList.remove('active')
+        }
     }
 
     return (
@@ -65,8 +74,7 @@ const DiskPage = () => {
             onDragLeave={e => dragLeaveHandler(e)}
             onDragOver={e => dragLeaveHandler(e)}
             onContextMenu={e => openContextMenuHandler(e)}
-            onClick={() => closeContextMenu()}
-            className='mb-20 h-auto h-min-550 flex flex-col'
+            onClick={e => closeContextMenu(e)}
         >
             <div className='flex'>
                 <Button
@@ -83,15 +91,16 @@ const DiskPage = () => {
                 </Button>
             </div>
             <Breadcrumbs/>
-            <FileList/>
-            <p className='mt-8 text-xs text-center font-medium text-neutral-400'>
-                Перетащите файлы сюда, чтобы добавить их на Диск
-            </p>
-            <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
-            <DefaultContextMenu/>
-            <FileContextMenu file={contextMenuFile}/>
-            <DirContextMenu file={contextMenuFile}/>
-            <FileUploadPopup/>
+            <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
+                <FileList/>
+
+                <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
+                <DefaultContextMenu/>
+                <FileContextMenu file={contextMenuFile}/>
+                <DirContextMenu file={contextMenuFile}/>
+                <SortContextMenu/>
+                <FileUploadPopup/>
+            </div>
         </div>
     );
 };

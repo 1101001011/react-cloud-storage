@@ -5,6 +5,7 @@ import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {pushToDirStack, setContextMenuFile, setCurrentDir} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {IoMdImage} from 'react-icons/io';
+import {calcLocation} from '../../utils/calcLocation';
 import './fileItem.scss'
 
 interface FileItemProps {
@@ -17,6 +18,7 @@ const FileItem: FC<FileItemProps> = ({file}) => {
     const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
     const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
     const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
+    const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
 
     function openDirHandler(file: IFile) {
         if (file.type === 'dir') {
@@ -27,21 +29,19 @@ const FileItem: FC<FileItemProps> = ({file}) => {
     }
 
     function openContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        if (defaultContextMenu.classList.contains('active')) {
-            defaultContextMenu.classList.remove('active')
-        }
+        defaultContextMenu.classList.remove('active')
+        fileContextMenu.classList.remove('active')
+        dirContextMenu.classList.remove('active')
+        sortContextMenu.classList.remove('active')
+
         if (file.type !== 'dir') {
             dispatch(setContextMenuFile(file))
-            dirContextMenu.classList.remove('active')
             fileContextMenu.classList.add('active')
-            fileContextMenu.style.left = String(e.clientX) + 'px'
-            fileContextMenu.style.top = String(e.clientY) + 'px'
+            calcLocation(e, fileContextMenu)
         } else {
             dispatch(setContextMenuFile(file))
-            fileContextMenu.classList.remove('active')
             dirContextMenu.classList.add('active')
-            dirContextMenu.style.left = String(e.clientX) + 'px'
-            dirContextMenu.style.top = String(e.clientY) + 'px'
+            calcLocation(e, dirContextMenu)
         }
     }
 

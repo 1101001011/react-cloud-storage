@@ -1,0 +1,11 @@
+.file__list {
+	@apply grid grid-cols-5 gap-3 flex text-sm font-medium text-neutral-600
+}
+
+.dirs__header {
+	@apply flex items-center py-3 px-4 text-sm font-medium text-neutral-600
+}
+
+.sort__btn {
+	@apply py-3 hover:bg-neutral-100 rounded-md cursor-pointer
+}
