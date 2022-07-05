@@ -8,6 +8,7 @@ const fileRoutes = (app: Express) => {
 
     app.get('/api/files', authMiddleware, FileController.getFiles)
     app.get('/api/files/download', authMiddleware, FileController.downloadFile)
+    app.get('/api/files/search', authMiddleware, FileController.searchFile)
 
     app.delete('/api/files', authMiddleware, FileController.deleteFile)
 }
