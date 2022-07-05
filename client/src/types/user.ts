@@ -7,10 +7,23 @@ export interface IUser {
 	files: string[]
 }
 
+export interface IError {
+	message: string
+	path: [string, string]
+}
+
 export interface UserState {
 	currentUser: {}
+	emailError: string
+	passwordError: string
+	compareError: string | undefined
 	isAuth: boolean
 	isLoader: boolean
+}
+
+export interface IUserAction {
+	payload: undefined
+	type: string
 }
 
 export interface IUserLogin {

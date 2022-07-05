@@ -1,6 +1,7 @@
 import { FC } from 'react'
 
 interface InputProps {
+	className?: string
 	value?: string
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	type: string
@@ -8,7 +9,7 @@ interface InputProps {
 }
 
 const Input: FC<InputProps> = ({ ...props }) => {
-	return <input {...props} className='input my-3' />
+	return <input {...props} />
 }
 
 export default Input

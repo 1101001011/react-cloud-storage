@@ -7,6 +7,8 @@ import RegistrationPage from './pages/authorization-pages/RegistrationPage'
 import HomePage from './pages/home-page/HomePage'
 import { auth } from './store/reducers/userReducer'
 import DiskPage from './pages/disk-page/DiskPage';
+import StarredFilesPage from './pages/starred-files-page/StarredFilesPage';
+import TrashCanPage from './pages/trash-can-page/TrashCanPage';
 
 window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
@@ -14,7 +16,7 @@ const App = () => {
 	const dispatch = useAppDispatch()
 
 	useEffect(() => {
-		dispatch(auth())
+		dispatch(auth(dispatch))
 	}, [dispatch])
 
 	if (isLoader) {
@@ -36,7 +38,9 @@ const App = () => {
 				<Routes>
 					{isAuth ? (
 						<Route>
-							<Route path='/storage' element={<DiskPage />} />
+							<Route path='/storage/main' element={<DiskPage />} />
+							<Route path='/storage/starred' element={<StarredFilesPage />} />
+							<Route path='/storage/trash' element={<TrashCanPage />} />
 							<Route path='*' element={<DiskPage />} />
 						</Route>
 					) : (

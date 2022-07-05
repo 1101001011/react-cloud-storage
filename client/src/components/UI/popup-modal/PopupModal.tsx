@@ -36,6 +36,7 @@ const PopupModal: FC<PopupModalProps> = ({type, dragEnter}) => {
                         Новая папка
                     </span>
                     <Input
+                        className='input my-3'
                         value={dirName}
                         type='text'
                         placeholder='Без названия'
