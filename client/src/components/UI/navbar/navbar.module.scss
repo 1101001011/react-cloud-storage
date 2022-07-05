@@ -1,5 +1,5 @@
 .wrapper {
-	@apply py-3 px-10 mx-auto mb-6 flex items-center border-b border-neutral-300;
+	@apply py-2 px-3 mb-6 grid grid-primary items-center border-b border-neutral-300;
 
 	.logo {
 		@apply flex items-center flex-grow cursor-pointer;
@@ -9,6 +9,6 @@
 		}
 	}
 	.sign__links {
-		@apply flex items-center text-gray-500;
+		@apply ml-auto flex items-center text-gray-500;
 	}
 }

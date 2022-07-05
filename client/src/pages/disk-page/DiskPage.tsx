@@ -17,6 +17,7 @@ import DirContextMenu from '../../components/UI/context-menu/DirContextMenu';
 import SortContextMenu from '../../components/UI/context-menu/SortContextMenu';
 import {calcLocation} from '../../utils/calcLocation';
 import './diskPage.scss'
+import Navbar from '../../components/UI/navbar/Navbar';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -70,38 +71,47 @@ const DiskPage = () => {
     }
 
     return (
-        <div
-            onDragEnter={e => dragEnterHandler(e)}
-            onDragLeave={e => dragLeaveHandler(e)}
-            onDragOver={e => dragLeaveHandler(e)}
-            onContextMenu={e => openContextMenuHandler(e)}
-            onClick={e => closeContextMenu(e)}
-        >
-            <div className='flex'>
-                <Button
-                    className='btn-primary mr-3 px-8 text-white bg-violet-600 rounded-md'
-                    onClick={() => dispatch(setCreatePopupDisplay('block'))}
-                >
-                    Создать папку
-                </Button>
-                <Button
-                    className='btn-primary px-8 text-white bg-violet-600 rounded-md'
-                    onClick={() => dispatch(setUploadPopupDisplay('block'))}
-                >
-                    Загрузить файл
-                </Button>
-            </div>
-            <Breadcrumbs/>
-            <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
-                <FileList sortValue={sortValue}/>
-                <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
-                <DefaultContextMenu/>
-                <FileContextMenu file={contextMenuFile}/>
-                <DirContextMenu file={contextMenuFile}/>
-                <SortContextMenu sortValue={sortValue} setSortValue={setSortValue}/>
-                <FileUploadPopup/>
+        <div>
+            <Navbar/>
+            <div
+                onDragEnter={e => dragEnterHandler(e)}
+                onDragLeave={e => dragLeaveHandler(e)}
+                onDragOver={e => dragLeaveHandler(e)}
+                onContextMenu={e => openContextMenuHandler(e)}
+                onClick={e => closeContextMenu(e)}
+                className='px-3 grid grid-primary'
+            >
+                <div></div>
+                <div>
+                    <div className='flex'>
+                        <Button
+                            className='btn-primary mr-3 px-8 text-white bg-violet-600 rounded-md'
+                            onClick={() => dispatch(setCreatePopupDisplay('block'))}
+                        >
+                            Создать папку
+                        </Button>
+                        <Button
+                            className='btn-primary px-8 text-white bg-violet-600 rounded-md'
+                            onClick={() => dispatch(setUploadPopupDisplay('block'))}
+                        >
+                            Загрузить файл
+                        </Button>
+                    </div>
+                    <Breadcrumbs/>
+                    <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
+                        <FileList sortValue={sortValue}/>
+                        <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
+                        <DefaultContextMenu/>
+                        <FileContextMenu file={contextMenuFile}/>
+                        <DirContextMenu file={contextMenuFile}/>
+                        <SortContextMenu sortValue={sortValue} setSortValue={setSortValue}/>
+                        <FileUploadPopup/>
+                    </div>
+                </div>
+                <div></div>
             </div>
         </div>
+
     );
 };
 

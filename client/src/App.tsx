@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Navbar from './components/UI/navbar/Navbar'
 import { useAppDispatch } from './hooks/useAppDispatch'
 import { useTypedSelector } from './hooks/useTypedSelector'
 import LoginPage from './pages/authorization-pages/LoginPage'
@@ -33,8 +32,7 @@ const App = () => {
 
 	return (
 		<BrowserRouter>
-			{isAuth && <Navbar />}
-			<div className='max-w-5xl m-auto'>
+			<div className='m-auto'>
 				<Routes>
 					{isAuth ? (
 						<Route>

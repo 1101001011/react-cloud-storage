@@ -4,7 +4,7 @@ import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
 
-export const getFiles = ({currentDir, sortValue}: {currentDir: string | null, sortValue: string | null}) => {
+export const getFiles = ({currentDir, sortValue}: {currentDir: string | null, sortValue?: string | null}) => {
 	return async (dispatch: any) => {
 		try {
 			dispatch(showLoader())
@@ -124,6 +124,21 @@ export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectVa
 	}
 )
 
+export const searchFiles = (searchName: string) => {
+	return async (dispatch: any) => {
+		try {
+			const response = await axios.get(`http://localhost:5000/api/files/search?search=${searchName}`, {
+				headers: {
+					authorization: `Bearer ${localStorage.getItem('token')}`
+				}
+			})
+			dispatch(getSearchFiles(response.data))
+		} catch (e: any) {
+			return e.response.data.message
+		}
+	}
+}
+
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
@@ -147,6 +162,10 @@ const filesSlice = createSlice({
 		getAllFiles(state, action) {
 			state.isLoader = false
 			state.allFiles.push(...action.payload)
+			state.files = action.payload
+		},
+		getSearchFiles(state, action) {
+			state.isLoader = false
 			state.files = action.payload
 		},
 		addFile(state, action) {
@@ -197,6 +216,7 @@ const filesSlice = createSlice({
 export default filesSlice.reducer
 export const {
 	getAllFiles,
+	getSearchFiles,
 	addFile,
 	setCurrentDir,
 	pushToDirStack,

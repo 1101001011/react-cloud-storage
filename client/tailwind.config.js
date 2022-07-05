@@ -41,11 +41,17 @@ module.exports = {
 				'.h-loader': {
 					height: '3px'
 				},
+				'.w-search-input': {
+					maxWidth: '700px'
+				},
 				'.text-l': {
 					fontSize: '15px'
 				},
 				'.shadow-primary': {
 					boxShadow: '0 6px 12px -1px rgb(0, 0, 0, 0.3)'
+				},
+				'.grid-primary': {
+					gridTemplateColumns: '16rem 1fr 16rem'
 				},
 				'.grid-item': {
 					gridTemplateColumns: '40px 1fr'
