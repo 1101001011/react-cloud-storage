@@ -32,7 +32,7 @@ const Popup: FC<PopupProps> = ({dragEnter, setDragEnter}) => {
         e.stopPropagation()
         let files = [...e.dataTransfer.files]
         dispatch(setSelectedFilesCount(files.length))
-        files.forEach(file => dispatch(uploadFile(file, currentDir)))
+        files.forEach(file => dispatch(uploadFile({dispatch, file, currentDir})))
         dispatch(setUploadPopupDisplay('none'))
     }
 

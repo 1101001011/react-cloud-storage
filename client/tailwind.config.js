@@ -51,10 +51,10 @@ module.exports = {
 					boxShadow: '0 6px 12px -1px rgb(0, 0, 0, 0.3)'
 				},
 				'.grid-primary': {
-					gridTemplateColumns: '16rem 1fr 16rem'
+					gridTemplateColumns: '16rem 1fr 19rem'
 				},
 				'.grid-item': {
-					gridTemplateColumns: '40px 1fr'
+					gridTemplateColumns: '45px 1fr'
 				}
 			})
 		}),

@@ -27,7 +27,6 @@ const Breadcrumbs = () => {
 					<div
 						className={styles.breadcrumb__title}
 						onClick={() => changeDirHandler(dir)}
-						onContextMenu={() => console.log('Right Click')}
 					>
 						{dir.name}
 					</div>

@@ -28,7 +28,7 @@ const Navbar = () => {
 				dispatch(searchFiles(value))
 			}, 500, e.target.value))
 		} else {
-			dispatch(getFiles({currentDir}))
+			dispatch(getFiles({dispatch, currentDir}))
 		}
 	}
 
@@ -64,7 +64,7 @@ const Navbar = () => {
 			)}
 			{isAuth && (
 				<div
-					className='ml-auto text-sm cursor-pointer'
+					className='ml-auto mr-7 text-sm cursor-pointer'
 					onClick={() => dispatch(logout())}
 				>
 					<NavLink to='/login'>Sign Out</NavLink>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
-import { login, registration } from '../../../store/reducers/userReducer'
+import {login, registration, resetErrors} from '../../../store/reducers/userReducer'
 import Button from '../button/Button'
 import Input from '../input/Input'
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
@@ -68,14 +68,14 @@ const Modal = ({type}: {type: modalTypes}) => {
 			{type === 'login' ? (
 				<div className={styles.toggle}>
 					<span className={styles.toggle__title}>Don’t have an account?</span>
-					<NavLink to='/registration' className='underline'>
+					<NavLink to='/registration' className='underline' onClick={() => dispatch(resetErrors())}>
 						Registration
 					</NavLink>
 				</div>
 			) : (
 				<div className={styles.toggle}>
 					<span className={styles.toggle__title}>Already have an account?</span>
-					<NavLink to='/login' className='underline'>
+					<NavLink to='/login' className='underline' onClick={() => dispatch(resetErrors())}>
 						Login
 					</NavLink>
 				</div>

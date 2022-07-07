@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {
-    getFiles,
-    setCreatePopupDisplay,
+    getFiles, setInfoMenuFile,
     setUploadPopupDisplay
 } from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
-import Button from '../../components/UI/button/Button';
 import FileList from '../../components/file-list/FileList';
 import Popup from '../../components/UI/popup/Popup';
 import Breadcrumbs from '../../components/UI/breadcrumbs/Breadcrumbs';
@@ -16,12 +14,19 @@ import FileContextMenu from '../../components/UI/context-menu/FileContextMenu';
 import DirContextMenu from '../../components/UI/context-menu/DirContextMenu';
 import SortContextMenu from '../../components/UI/context-menu/SortContextMenu';
 import {calcLocation} from '../../utils/calcLocation';
-import './diskPage.scss'
 import Navbar from '../../components/UI/navbar/Navbar';
+import LeftSideMenu from '../../components/left-side-menu/LeftSideMenu';
+import './diskPage.scss'
+import RightInfoMenu from '../../components/right-info-menu/RightInfoMenu';
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
-    const {currentDir, uploadPopupDisplay, contextMenuFile} = useTypedSelector(state => state.files)
+    const {
+        currentDir,
+        uploadPopupDisplay,
+        contextMenuFile,
+        infoMenuFile
+    } = useTypedSelector(state => state.files)
     const [dragEnter, setDragEnter] = useState(false)
     const [sortValue, setSortValue] = useState<string | null>('name')
     const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
@@ -30,7 +35,7 @@ const DiskPage = () => {
     const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
 
     useEffect(() => {
-        dispatch(getFiles({currentDir, sortValue}))
+        dispatch(getFiles({dispatch, currentDir, sortValue}))
     }, [currentDir, sortValue])
 
     function dragEnterHandler(e: React.DragEvent<HTMLDivElement>) {
@@ -60,13 +65,17 @@ const DiskPage = () => {
     }
 
     function closeContextMenu(e: React.MouseEvent<HTMLDivElement>) {
-        defaultContextMenu.classList.remove('active')
         fileContextMenu.classList.remove('active')
         dirContextMenu.classList.remove('active')
-        const sortItems = document.getElementsByClassName('sort__btn')
 
-        if (!(Array.from(sortItems).includes(e.target as Element))) {
+        if (!(e.target as Element).getAttribute('data-sort')) {
             sortContextMenu.classList.remove('active')
+        }
+        if (!(e.target as Element).getAttribute('data-create')) {
+            defaultContextMenu.classList.remove('active')
+        }
+        if (!(e.target as Element).classList.contains('file__item')) {
+            dispatch(setInfoMenuFile(null))
         }
     }
 
@@ -79,24 +88,10 @@ const DiskPage = () => {
                 onDragOver={e => dragLeaveHandler(e)}
                 onContextMenu={e => openContextMenuHandler(e)}
                 onClick={e => closeContextMenu(e)}
-                className='px-3 grid grid-primary'
+                className='grid grid-primary'
             >
-                <div></div>
-                <div>
-                    <div className='flex'>
-                        <Button
-                            className='btn-primary mr-3 px-8 text-white bg-violet-600 rounded-md'
-                            onClick={() => dispatch(setCreatePopupDisplay('block'))}
-                        >
-                            Создать папку
-                        </Button>
-                        <Button
-                            className='btn-primary px-8 text-white bg-violet-600 rounded-md'
-                            onClick={() => dispatch(setUploadPopupDisplay('block'))}
-                        >
-                            Загрузить файл
-                        </Button>
-                    </div>
+                <LeftSideMenu/>
+                <div className='mt-6'>
                     <Breadcrumbs/>
                     <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
                         <FileList sortValue={sortValue}/>
@@ -108,7 +103,7 @@ const DiskPage = () => {
                         <FileUploadPopup/>
                     </div>
                 </div>
-                <div></div>
+                <RightInfoMenu file={infoMenuFile}/>
             </div>
         </div>
 

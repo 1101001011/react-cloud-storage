@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { NavLink } from 'react-router-dom'
 
 type btnTypes = 'login' | 'registration'
 
@@ -10,10 +9,10 @@ interface ButtonProps {
 	onClick: () => void
 }
 
-const Button: FC<ButtonProps> = ({className, type, children, onClick}) => {
+const Button: FC<ButtonProps> = ({type, children, ...props}) => {
 	return (
-		<button className={className} onClick={onClick}>
-			<NavLink to={type === 'login' ? '/' : '/login'}>{children}</NavLink>
+		<button {...props}>
+			{children}
 		</button>
 	)
 }

@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {IFile} from '../../types/file';
 import {RiFolderUserFill} from 'react-icons/ri';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {pushToDirStack, setContextMenuFile, setCurrentDir} from '../../store/reducers/filesReducer';
+import {pushToDirStack, setContextMenuFile, setCurrentDir, setInfoMenuFile} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {IoMdImage} from 'react-icons/io';
 import {calcLocation} from '../../utils/calcLocation';
@@ -14,7 +14,7 @@ interface FileItemProps {
 
 const FileItem: FC<FileItemProps> = ({file}) => {
     const dispatch = useAppDispatch()
-    const {dirStack} = useTypedSelector(state => state.files)
+    const {dirStack, infoMenuFile} = useTypedSelector(state => state.files)
     const defaultContextMenu = document.querySelector('#default-context-menu') as HTMLElement
     const fileContextMenu = document.querySelector('#file-context-menu') as HTMLElement
     const dirContextMenu = document.querySelector('#dir-context-menu') as HTMLElement
@@ -45,9 +45,14 @@ const FileItem: FC<FileItemProps> = ({file}) => {
         }
     }
 
+    function openInfoMenuHandler() {
+        if (infoMenuFile) dispatch(setInfoMenuFile(file))
+    }
+
     return (
         <div
             className='file__item'
+            onClick={() => openInfoMenuHandler()}
             onDoubleClick={() => openDirHandler(file)}
             onContextMenu={(e) => openContextMenuHandler(e)}
             draggable={true}

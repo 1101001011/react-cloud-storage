@@ -1,5 +1,5 @@
 import {Dispatch} from 'react';
-import {IError, IUserAction, IUserLogin} from './../../types/user'
+import {IError, IUserAction, IUserLogin} from '../../types/user'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { UserState } from '../../types/user'
@@ -80,6 +80,7 @@ const userSlice = createSlice({
 		resetErrors(state) {
 			state.emailError = ''
 			state.passwordError = ''
+			state.compareError = ''
 		}
 	},
 	extraReducers: builder => {

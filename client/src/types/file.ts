@@ -5,6 +5,7 @@ export interface IFile {
     size: number
     path: string
     user: string
+    date: string
     parent?: string
     children: []
 }
@@ -23,6 +24,7 @@ export interface FileState {
     createPopupDisplay: string
     uploadPopupDisplay: string
     contextMenuFile: IFile
+    infoMenuFile: IFile | null
     isLoader: boolean
 }
 

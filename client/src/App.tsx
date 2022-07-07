@@ -16,7 +16,7 @@ const App = () => {
 	const dispatch = useAppDispatch()
 
 	useEffect(() => {
-		dispatch(auth(dispatch))
+		dispatch(auth())
 	}, [dispatch])
 
 	if (isLoader) {

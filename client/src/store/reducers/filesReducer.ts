@@ -4,9 +4,13 @@ import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
 
-export const getFiles = ({currentDir, sortValue}: {currentDir: string | null, sortValue?: string | null}) => {
-	return async (dispatch: any) => {
+export const getFiles = createAsyncThunk<
+	IFile[],
+	{dispatch: any, currentDir: string | null, sortValue?: string | null},
+	{rejectValue: string}>(
+	'files/getfiles', async (data, {rejectWithValue}) => {
 		try {
+			const {dispatch, currentDir, sortValue} = data
 			dispatch(showLoader())
 			let url = `http://localhost:5000/api/files`
 			if (currentDir) {
@@ -24,14 +28,17 @@ export const getFiles = ({currentDir, sortValue}: {currentDir: string | null, so
 						authorization: `Bearer ${localStorage.getItem('token')}`
 					}
 				})
-			dispatch(getAllFiles(response.data))
+			return response.data
 		} catch (e: any) {
-			return e.response.data.message
+			return rejectWithValue(e.response.data.message)
 		}
 	}
-}
+)
 
-export const createDir = createAsyncThunk <IFile, {name: string, parent: string | null}, {rejectValue: string}>(
+export const createDir = createAsyncThunk<
+	IFile,
+	{name: string, parent: string | null},
+	{rejectValue: string}>(
 	'files/createdir', async (data, {rejectWithValue}) => {
 		try {
 			const {name, parent} = data
@@ -49,12 +56,17 @@ export const createDir = createAsyncThunk <IFile, {name: string, parent: string 
 	}
 )
 
-export const uploadFile = (file: File, dirId: string | null) => {
-	return async (dispatch: any) => {
+export const uploadFile = createAsyncThunk<
+	IFile,
+	{dispatch: any, file: File, currentDir: string | null},
+	{rejectValue: string}>(
+	'files/upload', async (data, {rejectWithValue}) => {
 		try {
+			const {dispatch, file, currentDir} = data
+
 			const formData = new FormData()
 			formData.append('file', file)
-			if (dirId) formData.append('parent', dirId)
+			if (currentDir) formData.append('parent', currentDir)
 
 			const upFile: IUploadFile = {
 				name: file.name,
@@ -79,10 +91,12 @@ export const uploadFile = (file: File, dirId: string | null) => {
 					}
 				}
 			});
-			dispatch(addFile(response.data))
-		} catch (e: any) {}
+			return response.data
+		} catch (e: any) {
+			return rejectWithValue(e.response.data.message)
+		}
 	}
-}
+)
 
 
 export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>(
@@ -124,20 +138,20 @@ export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectVa
 	}
 )
 
-export const searchFiles = (searchName: string) => {
-	return async (dispatch: any) => {
+export const searchFiles = createAsyncThunk<IFile[], string, {rejectValue: string}>(
+	'files/search', async (searchName, {rejectWithValue}) => {
 		try {
 			const response = await axios.get(`http://localhost:5000/api/files/search?search=${searchName}`, {
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`
 				}
 			})
-			dispatch(getSearchFiles(response.data))
+			return response.data
 		} catch (e: any) {
-			return e.response.data.message
+			return rejectWithValue(e.response.data.message)
 		}
 	}
-}
+)
 
 const initialState: FileState = {
 	files: [],
@@ -150,8 +164,9 @@ const initialState: FileState = {
 	createPopupDisplay: 'none',
 	uploadPopupDisplay: 'none',
 	contextMenuFile: {
-		_id: '', type: '', name: '', user: '', path: '', size: 0, children: []
+		_id: '', type: '', name: '', user: '', path: '', size: 0, children: [], date: ''
 	},
+	infoMenuFile: null,
 	isLoader: false
 }
 
@@ -159,18 +174,6 @@ const filesSlice = createSlice({
 	name: 'files',
 	initialState,
 	reducers: {
-		getAllFiles(state, action) {
-			state.isLoader = false
-			state.allFiles.push(...action.payload)
-			state.files = action.payload
-		},
-		getSearchFiles(state, action) {
-			state.isLoader = false
-			state.files = action.payload
-		},
-		addFile(state, action) {
-			state.files.push(action.payload)
-		},
 		setCurrentDir(state, action) {
 			state.currentDir = action.payload
 		},
@@ -189,17 +192,28 @@ const filesSlice = createSlice({
 		setContextMenuFile(state, action) {
 			state.contextMenuFile = action.payload
 		},
+		setInfoMenuFile(state, action) {
+			state.infoMenuFile = action.payload
+		},
 		showLoader(state) {
 			state.isLoader = true
 		}
 	},
 	extraReducers: builder => {
 		builder
+			.addCase(getFiles.fulfilled, (state, action) => {
+				state.isLoader = false
+				state.allFiles.push(...action.payload)
+				state.files = action.payload
+			})
 			.addCase(createDir.fulfilled, (state, action) => {
 				state.files.push(action.payload)
 			})
 			.addCase(createDir.rejected, (state, action) => {
 				alert(action.payload)
+			})
+			.addCase(uploadFile.fulfilled, (state, action) => {
+				state.files.push(action.payload)
 			})
 			.addCase(downloadFile.rejected, (state, action) => {
 				alert(action.payload)
@@ -210,19 +224,21 @@ const filesSlice = createSlice({
 			.addCase(deleteFile.rejected, (state, action) => {
 				alert(action.payload)
 			})
+			.addCase(searchFiles.fulfilled, (state, action) => {
+				state.isLoader = false
+				state.files = action.payload
+			})
 	}
 })
 
 export default filesSlice.reducer
 export const {
-	getAllFiles,
-	getSearchFiles,
-	addFile,
 	setCurrentDir,
 	pushToDirStack,
 	sliceDirStack,
 	setCreatePopupDisplay,
 	setUploadPopupDisplay,
 	setContextMenuFile,
+	setInfoMenuFile,
 	showLoader
 } = filesSlice.actions

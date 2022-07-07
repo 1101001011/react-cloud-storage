@@ -129,13 +129,19 @@ class FileController {
         try {
             const userId = res.locals.user._id
 
-            const file = await File.findOne({_id: req.query.id, user: userId})
+            const user = (await User.findOne({_id: userId}))!
+            const file = (await File.findOne({_id: req.query.id, user: userId}))!
             if (!file) {
                 return res.status(400).json({message: 'file not found'})
             }
 
+            // @ts-ignore
+            user.usedSpace = user.usedSpace - file.size
+
             FileService.deleteFile(file)
             await file.remove()
+            await user.save()
+
             return res.json({
                 message: 'File was deleted',
                 fileId: file._id

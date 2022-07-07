@@ -55,6 +55,7 @@ const FileList = ({sortValue}: {sortValue: string | null}) => {
                         <span
                             className='sort__btn'
                             onClick={() => openSortContextMenu()}
+                            data-sort
                         >
                             {(!sortValue || sortValue === 'name') && 'Название'}
                             {sortValue === 'type' && 'Тип'}
@@ -78,6 +79,7 @@ const FileList = ({sortValue}: {sortValue: string | null}) => {
                         <span
                             className='sort__btn'
                             onClick={() => openSortContextMenu()}
+                            data-sort
                         >
                             Названиe
                         </span>

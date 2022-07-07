@@ -20,7 +20,7 @@ const PopupModal: FC<PopupModalProps> = ({type, dragEnter}) => {
         // @ts-ignore
         const files = [...e.target.files]
         dispatch(setSelectedFilesCount(files.length))
-        files.forEach(file => dispatch(uploadFile(file, currentDir)))
+        files.forEach(file => dispatch(uploadFile({dispatch, file, currentDir})))
         dispatch(setUploadPopupDisplay('none'))
     }
 
