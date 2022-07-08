@@ -123,10 +123,17 @@ export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>
 	}
 )
 
-export const deleteFile = createAsyncThunk<IDeleteFileResponse, IFile, {rejectValue: string}>(
-	'files/delete', async (file, {rejectWithValue}) => {
+export const deleteFile = createAsyncThunk<
+	IDeleteFileResponse,
+	{file: IFile, parent: string | null},
+	{rejectValue: string}>(
+	'files/delete', async (data, {rejectWithValue}) => {
 		try {
+			const {file, parent} = data
 			const response = await axios.delete(`http://localhost:5000/api/files?id=${file._id}`, {
+				data: {
+					parent
+				},
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`
 				}

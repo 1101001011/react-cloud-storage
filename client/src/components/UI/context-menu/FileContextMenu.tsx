@@ -7,6 +7,7 @@ import {deleteFile, downloadFile, setInfoMenuFile} from '../../../store/reducers
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {IFile} from '../../../types/file';
 import './contextMenu.scss'
+import {useTypedSelector} from '../../../hooks/useTypedSelector';
 
 interface FileContextMenuProps {
     file: IFile
@@ -14,6 +15,7 @@ interface FileContextMenuProps {
 
 const FileContextMenu: FC<FileContextMenuProps> = ({file}) => {
     const dispatch = useAppDispatch()
+    const {currentDir} = useTypedSelector(state => state.files)
     const contextMenu = document.querySelector('#file-context-menu') as HTMLElement
 
     function downloadFileHandler(e: React.MouseEvent<HTMLDivElement>) {
@@ -22,20 +24,21 @@ const FileContextMenu: FC<FileContextMenuProps> = ({file}) => {
         contextMenu.classList.remove('active')
     }
 
-    function openInfoMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        e.stopPropagation()
-        dispatch(setInfoMenuFile(file))
-        contextMenu.classList.remove('active')
+    async function deleteFileHandler() {
+        await dispatch(deleteFile({file, parent: currentDir}))
+        dispatch(setInfoMenuFile(null))
     }
 
-    function deleteFileHandler(e: React.MouseEvent<HTMLDivElement>) {
+    function fileContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation()
-        dispatch(deleteFile(file))
         contextMenu.classList.remove('active')
     }
 
     return (
-        <div className='context__menu' id='file-context-menu'>
+        <div
+            className='context__menu' id='file-context-menu'
+            onClick={e => fileContextMenuHandler(e)}
+        >
             <div className='grid grid-item px-4 py-1 mt-4 hover:bg-neutral-100 cursor-pointer'>
                 <IoMdStarOutline size={25} className='text-neutral-500'/>
                 Добавить в помеченные
@@ -47,7 +50,7 @@ const FileContextMenu: FC<FileContextMenuProps> = ({file}) => {
             <hr className='my-1.5'/>
             <div
                 className='grid grid-item px-4 py-1 hover:bg-neutral-100 cursor-pointer'
-                onClick={e => openInfoMenuHandler(e)}
+                onClick={() => dispatch(setInfoMenuFile(file))}
             >
                 <BiInfoCircle size={25} className='text-neutral-500'/>
                 Показать свойства
@@ -62,7 +65,7 @@ const FileContextMenu: FC<FileContextMenuProps> = ({file}) => {
             <hr className='my-1.5'/>
             <div
                 className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
-                onClick={e => deleteFileHandler(e)}
+                onClick={() => deleteFileHandler()}
             >
                 <RiDeleteBin6Line size={23} className='text-neutral-500'/>
                 Удалить

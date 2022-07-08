@@ -12,7 +12,7 @@ const Breadcrumbs = () => {
 
 	const changeDirHandler = (dir: IBreadcrumbsDir) => {
 		if (dir.name === 'Мой Диск') {
-			dispatch(setCurrentDir(''))
+			dispatch(setCurrentDir(null))
 		} else {
 			const found = allFiles.find(file => file.name === dir.name)
 			if (found) dispatch(setCurrentDir(found._id))

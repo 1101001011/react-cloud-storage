@@ -71,6 +71,8 @@ class FileController {
             }
 
             user.usedSpace = user.usedSpace + file.size
+            // @ts-ignore
+            if (parent) parent.size = parent.size + file.size
 
             let path;
             if (parent) {
@@ -100,6 +102,7 @@ class FileController {
 
             await dbFile.save()
             await user.save()
+            if (parent) await parent.save()
 
             res.json(dbFile)
         } catch (e) {
@@ -131,16 +134,21 @@ class FileController {
 
             const user = (await User.findOne({_id: userId}))!
             const file = (await File.findOne({_id: req.query.id, user: userId}))!
+            const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
+
             if (!file) {
                 return res.status(400).json({message: 'file not found'})
             }
 
             // @ts-ignore
             user.usedSpace = user.usedSpace - file.size
+            // @ts-ignore
+            if (parent) parent.size = parent.size - file.size
 
             FileService.deleteFile(file)
             await file.remove()
             await user.save()
+            if (parent) await parent.save()
 
             return res.json({
                 message: 'File was deleted',
