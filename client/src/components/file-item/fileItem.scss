@@ -1,3 +1,7 @@
 .file__item {
 	@apply py-3 px-4 flex items-center border border-neutral-300 rounded-md hover:bg-neutral-100
 }
+
+.file__name {
+	@apply w-28 overflow-ellipsis whitespace-nowrap overflow-hidden
+}

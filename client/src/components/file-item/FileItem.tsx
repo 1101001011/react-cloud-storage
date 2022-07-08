@@ -2,10 +2,16 @@ import React, {FC} from 'react';
 import {IFile} from '../../types/file';
 import {RiFolderUserFill} from 'react-icons/ri';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {pushToDirStack, setContextMenuFile, setCurrentDir, setInfoMenuFile} from '../../store/reducers/filesReducer';
+import {
+    pushToDirStack,
+    setContextMenuFile,
+    setCurrentDir,
+    setInfoMenuFile
+} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {IoMdImage} from 'react-icons/io';
 import {calcLocation} from '../../utils/calcLocation';
+import {MdSlowMotionVideo} from 'react-icons/md';
 import './fileItem.scss'
 
 interface FileItemProps {
@@ -22,6 +28,7 @@ const FileItem: FC<FileItemProps> = ({file}) => {
 
     function openDirHandler(file: IFile) {
         if (file.type === 'dir') {
+            dispatch(setInfoMenuFile(null))
             const idNum = dirStack[dirStack.length-1].id + 1
             dispatch(setCurrentDir(file._id))
             dispatch(pushToDirStack({id: idNum, name: file.name}))
@@ -57,11 +64,14 @@ const FileItem: FC<FileItemProps> = ({file}) => {
             onContextMenu={(e) => openContextMenuHandler(e)}
             draggable={true}
         >
-            {file.type === 'dir'
-                ? <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>
-                : <IoMdImage size={22} className='mr-4 text-orange-600'/>
+            {file.type === 'dir' && <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>}
+            {file.type === 'mp4' && <MdSlowMotionVideo size={22} className='mr-4 text-blue-600'/>}
+            {file.type !== 'dir' && file.type !== 'mp4' &&
+                <IoMdImage size={22} className='mr-4 text-orange-600'/>
             }
-            {file.name}
+            <span className='file__name'>
+                {file.name}
+            </span>
         </div>
     )
 }

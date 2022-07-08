@@ -6,9 +6,19 @@ import './contextMenu.scss'
 
 const DefaultContextMenu = () => {
     const dispatch = useAppDispatch()
+    const contextMenu = document.querySelector('#default-context-menu') as HTMLElement
+
+    function clickContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
+        e.stopPropagation()
+        contextMenu.classList.remove('active')
+    }
 
     return (
-        <div className='context__menu' id='default-context-menu'>
+        <div
+            className='context__menu'
+            id='default-context-menu'
+            onClick={e => clickContextMenuHandler(e)}
+        >
             <div
                 className='grid grid-item px-4 py-1 mt-4 hover:bg-neutral-100 cursor-pointer'
                 onClick={() => dispatch(setCreatePopupDisplay('block'))}

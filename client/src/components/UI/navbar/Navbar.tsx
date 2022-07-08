@@ -36,7 +36,7 @@ const Navbar = () => {
 		<div className={styles.wrapper}>
 			<div
 				className={styles.logo}
-				onClick={() => navigate('/storage')}
+				onClick={() => navigate('/storage/main')}
 			>
 				<BsSafe2Fill size={40} className='mr-3 text-violet-600' />
 				<div className={styles.logo__title}>Cybersafe</div>

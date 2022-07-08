@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {
-    getFiles, setInfoMenuFile,
-    setUploadPopupDisplay
-} from '../../store/reducers/filesReducer';
+import {getFiles, setInfoMenuFile, setUploadPopupDisplay} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import FileList from '../../components/file-list/FileList';
 import Popup from '../../components/UI/popup/Popup';
@@ -16,8 +13,8 @@ import SortContextMenu from '../../components/UI/context-menu/SortContextMenu';
 import {calcLocation} from '../../utils/calcLocation';
 import Navbar from '../../components/UI/navbar/Navbar';
 import LeftSideMenu from '../../components/left-side-menu/LeftSideMenu';
-import './diskPage.scss'
 import RightInfoMenu from '../../components/right-info-menu/RightInfoMenu';
+import './diskPage.scss'
 
 const DiskPage = () => {
     const dispatch = useAppDispatch()
@@ -55,7 +52,8 @@ const DiskPage = () => {
     function openContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
         const target = e.target as Element
 
-        if (!target.classList.contains('file__item') && target.tagName !== 'path' && target.tagName !== 'svg') {
+        if (!target.classList.contains('file__item') && target.tagName !== 'path'
+            && target.tagName !== 'svg' && target.tagName !== 'SPAN') {
             fileContextMenu.classList.remove('active')
             dirContextMenu.classList.remove('active')
             sortContextMenu.classList.remove('active')
@@ -65,16 +63,19 @@ const DiskPage = () => {
     }
 
     function closeContextMenu(e: React.MouseEvent<HTMLDivElement>) {
+        const target = e.target as Element
+
         fileContextMenu.classList.remove('active')
         dirContextMenu.classList.remove('active')
 
-        if (!(e.target as Element).getAttribute('data-sort')) {
+        if (!target.getAttribute('data-sort')) {
             sortContextMenu.classList.remove('active')
         }
-        if (!(e.target as Element).getAttribute('data-create')) {
+        if (!target.getAttribute('data-create')) {
             defaultContextMenu.classList.remove('active')
         }
-        if (!(e.target as Element).classList.contains('file__item')) {
+        if (!target.classList.contains('file__item') && !target.getAttribute('data-create')
+            && target.tagName !== 'path' && target.tagName !== 'svg' && target.tagName !== 'SPAN') {
             dispatch(setInfoMenuFile(null))
         }
     }
@@ -86,12 +87,14 @@ const DiskPage = () => {
                 onDragEnter={e => dragEnterHandler(e)}
                 onDragLeave={e => dragLeaveHandler(e)}
                 onDragOver={e => dragLeaveHandler(e)}
-                onContextMenu={e => openContextMenuHandler(e)}
                 onClick={e => closeContextMenu(e)}
                 className='grid grid-primary'
             >
                 <LeftSideMenu/>
-                <div className='mt-6'>
+                <div
+                    className='mt-6'
+                    onContextMenu={e => openContextMenuHandler(e)}
+                >
                     <Breadcrumbs/>
                     <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
                         <FileList sortValue={sortValue}/>

@@ -5,6 +5,7 @@ import {IoMdImage} from 'react-icons/io';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {calcSizeFormat} from '../../utils/calcSizeFormat';
 import {BsInfoCircle} from 'react-icons/bs';
+import {MdSlowMotionVideo} from 'react-icons/md';
 
 interface RightInfoMenuProps {
     file: IFile | null
@@ -30,9 +31,10 @@ const RightInfoMenu: FC<RightInfoMenuProps> = ({file}) => {
             {file &&
                 <div>
                     <div className='flex flex-col items-center py-8 border-b'>
-                        {file.type === 'dir'
-                            ? <RiFolderUserFill size={80} className='text-neutral-500'/>
-                            : <IoMdImage size={80} className='text-orange-600'/>
+                        {file.type === 'dir' && <RiFolderUserFill size={80} className='mr-4 text-neutral-500'/>}
+                        {file.type === 'mp4' && <MdSlowMotionVideo size={80} className='mr-4 text-blue-600'/>}
+                        {file.type !== 'dir' && file.type !== 'mp4' &&
+                            <IoMdImage size={80} className='mr-4 text-orange-600'/>
                         }
                         <span className='text-xl text-neutral-600'>{file.name}</span>
                     </div>
@@ -42,10 +44,9 @@ const RightInfoMenu: FC<RightInfoMenuProps> = ({file}) => {
                             <div className='grid grid-item py-1'>
                                 <span>Тип</span>
                                 <span className='ml-24'>
-                                {file.type === 'dir'
-                                    ? 'Папка'
-                                    : 'Файл'
-                                }
+                                {file.type === 'dir' && 'Папка'}
+                                {file.type === 'mp4' && 'Видео'}
+                                {file.type !== 'dir' && file.type !== 'mp4' && 'Изображение'}
                                 </span>
                             </div>
                             <div className='grid grid-item py-1'>
@@ -77,7 +78,6 @@ const RightInfoMenu: FC<RightInfoMenuProps> = ({file}) => {
                     </div>
                 </div>
             }
-
         </div>
     );
 };
