@@ -3,11 +3,11 @@ import {IoMdStarOutline} from 'react-icons/io';
 import {MdDriveFileRenameOutline} from 'react-icons/md';
 import {BiInfoCircle} from 'react-icons/bi';
 import {RiDeleteBin6Line} from 'react-icons/ri';
-import {deleteFile, setInfoMenuFile} from '../../../store/reducers/filesReducer';
+import {setInfoMenuFile, updateFileStatus} from '../../../store/reducers/filesReducer';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {IFile} from '../../../types/file';
-import './contextMenu.scss'
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
+import './contextMenu.scss'
 
 interface DirContextMenuProps {
     file: IFile
@@ -19,7 +19,7 @@ const DirContextMenu: FC<DirContextMenuProps> = ({file}) => {
     const contextMenu = document.querySelector('#dir-context-menu') as HTMLElement
 
     async function deleteFileHandler() {
-        await dispatch(deleteFile({file, parent: currentDir}))
+        await dispatch(updateFileStatus({file, parent: currentDir}))
         dispatch(setInfoMenuFile(null))
     }
 

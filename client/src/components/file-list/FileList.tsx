@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {FC} from 'react';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import FileItem from '../file-item/FileItem';
 import {IoMdArrowUp} from 'react-icons/io';
@@ -6,7 +6,11 @@ import {TiFlowSwitch} from 'react-icons/ti';
 import {calcLocationSortContextMenu} from '../../utils/calcLocationSortContextMenu';
 import './fileList.scss'
 
-const FileList = ({sortValue}: {sortValue: string | null}) => {
+interface FileListProps {
+    sortValue: string | null
+}
+
+const FileList: FC<FileListProps> = ({sortValue}) => {
     const allFiles = useTypedSelector(state => state.files.files)
     const isLoader = useTypedSelector(state => state.files.isLoader)
     const dirs = allFiles.filter(file => file.type === 'dir')

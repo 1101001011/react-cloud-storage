@@ -6,7 +6,7 @@ const StarredFilesPage = () => {
     return (
         <div>
             <Navbar/>
-            <div className='px-3 grid grid-primary'>
+            <div className='grid grid-primary'>
                 <LeftSideMenu/>
                 <h1 className='text-4xl text-center'>Starred Files</h1>
                 <div></div>

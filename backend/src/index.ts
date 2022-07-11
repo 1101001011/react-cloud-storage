@@ -3,10 +3,11 @@ import config from 'config'
 import fileUpload from 'express-fileupload'
 import {cors} from './middlewares/cors.middleware'
 import authMiddleware from './middlewares/auth.middleware';
-import {connect} from './utils/connect.utils';
 import authRoutes from './routes/auth.routes';
-import log from './utils/logger.utils';
 import fileRoutes from './routes/file.routes';
+import deletedFileRoutes from './routes/deletedFile.routes';
+import {connect} from './utils/connect.utils';
+import log from './utils/logger.utils';
 
 const app = express()
 const PORT = config.get('serverPort')
@@ -25,6 +26,7 @@ const start = async () => {
 
 	authRoutes(app)
 	fileRoutes(app)
+	deletedFileRoutes(app)
 }
 
 start()

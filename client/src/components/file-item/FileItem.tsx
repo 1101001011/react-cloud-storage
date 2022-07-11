@@ -62,7 +62,6 @@ const FileItem: FC<FileItemProps> = ({file}) => {
             onClick={() => openInfoMenuHandler()}
             onDoubleClick={() => openDirHandler(file)}
             onContextMenu={(e) => openContextMenuHandler(e)}
-            draggable={true}
         >
             {file.type === 'dir' && <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>}
             {file.type === 'mp4' && <MdSlowMotionVideo size={22} className='mr-4 text-blue-600'/>}

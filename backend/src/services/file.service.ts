@@ -1,6 +1,6 @@
 import {FileInput} from '../models/file.model';
 import config from 'config';
-import * as fs from 'fs';
+import fs from 'fs';
 
 class FileService {
 	getPath(file: FileInput) {
@@ -27,7 +27,7 @@ class FileService {
 	deleteFile(file: FileInput) {
 		const filePath = this.getPath(file)
 		if (file.type === 'dir') {
-			fs.rmdirSync(filePath)
+			fs.rmSync(filePath, {recursive: true, force: true})
 		} else {
 			fs.unlinkSync(filePath)
 		}

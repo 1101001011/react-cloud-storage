@@ -39,16 +39,16 @@ class FileController {
             let files
             switch (sort) {
                 case 'name':
-                    files = await File.find({user: userId, parent}).sort({name: 1})
+                    files = await File.find({user: userId, parent, status: 'active'}).sort({name: 1})
                     break
                 case 'type':
-                    files = await File.find({user: userId, parent}).sort({type: 1})
+                    files = await File.find({user: userId, parent, status: 'active'}).sort({type: 1})
                     break
                 case 'date':
-                    files = await File.find({user: userId, parent}).sort({date: 1})
+                    files = await File.find({user: userId, parent, status: 'active'}).sort({date: 1})
                     break
                 default:
-                    files = await File.find({user: userId, parent})
+                    files = await File.find({user: userId, parent, status: 'active'})
                     break
             }
 
@@ -128,35 +128,25 @@ class FileController {
         }
     }
 
-    async deleteFile(req: Request, res: Response) {
+    async updateFileStatus(req: Request, res: Response) {
         try {
             const userId = res.locals.user._id
 
             const user = (await User.findOne({_id: userId}))!
-            const file = (await File.findOne({_id: req.query.id, user: userId}))!
+            await File.updateOne({_id: req.query.id, user: userId}, {$set: {status: 'deleted'}})
+            const file = await File.findOne({_id: req.query.id, user: userId})
             const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
-
-            if (!file) {
-                return res.status(400).json({message: 'file not found'})
-            }
 
             // @ts-ignore
             user.usedSpace = user.usedSpace - file.size
             // @ts-ignore
             if (parent) parent.size = parent.size - file.size
-
-            FileService.deleteFile(file)
-            await file.remove()
-            await user.save()
             if (parent) await parent.save()
 
-            return res.json({
-                message: 'File was deleted',
-                fileId: file._id
-            })
+            return res.json(file)
         } catch (e) {
             console.log(e)
-            return res.status(400).json({message: 'Dir is not empty'})
+            return res.status(400).json({message: 'Update file status error'})
         }
     }
 

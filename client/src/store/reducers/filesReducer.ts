@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {FileState, IDeleteFileResponse, IBreadcrumbsDir, IFile} from '../../types/file';
+import {FileState, IBreadcrumbsDir, IFile} from '../../types/file';
 import axios from 'axios';
 import {addUploadFile, changeUploadFile, showUploadLoader} from './uploadReducer';
 import {IUploadFile} from '../../types/upload';
@@ -98,7 +98,6 @@ export const uploadFile = createAsyncThunk<
 	}
 )
 
-
 export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>(
 	'files/download', async (file, {rejectWithValue}) => {
 		try {
@@ -123,21 +122,21 @@ export const downloadFile = createAsyncThunk<void, IFile, {rejectValue: string}>
 	}
 )
 
-export const deleteFile = createAsyncThunk<
-	IDeleteFileResponse,
-	{file: IFile, parent: string | null},
+export const updateFileStatus = createAsyncThunk<
+	IFile,
+	{ file: IFile, parent: string | null },
 	{rejectValue: string}>(
-	'files/delete', async (data, {rejectWithValue}) => {
+	'files/update', async (data, {rejectWithValue}) => {
 		try {
 			const {file, parent} = data
-			const response = await axios.delete(`http://localhost:5000/api/files?id=${file._id}`, {
-				data: {
-					parent
-				},
+			const response = await axios.patch(`http://localhost:5000/api/files/update_status?id=${file._id}`, {
+				parent
+			}, {
 				headers: {
 					authorization: `Bearer ${localStorage.getItem('token')}`
 				}
 			})
+
 			return response.data
 		} catch (e: any) {
 			return rejectWithValue(e.response.data.message)
@@ -171,7 +170,7 @@ const initialState: FileState = {
 	createPopupDisplay: 'none',
 	uploadPopupDisplay: 'none',
 	contextMenuFile: {
-		_id: '', type: '', name: '', user: '', path: '', size: 0, children: [], date: ''
+		_id: '', type: '', name: '', user: '', path: '', size: 0, children: [], status: 'active', date: ''
 	},
 	infoMenuFile: null,
 	isLoader: false
@@ -225,11 +224,8 @@ const filesSlice = createSlice({
 			.addCase(downloadFile.rejected, (state, action) => {
 				alert(action.payload)
 			})
-			.addCase(deleteFile.fulfilled, (state, action) => {
-				state.files = state.files.filter(file => file._id !== action.payload.fileId)
-			})
-			.addCase(deleteFile.rejected, (state, action) => {
-				alert(action.payload)
+			.addCase(updateFileStatus.fulfilled, (state, action) => {
+				state.files = state.files.filter(file => file._id !== action.payload._id)
 			})
 			.addCase(searchFiles.fulfilled, (state, action) => {
 				state.isLoader = false

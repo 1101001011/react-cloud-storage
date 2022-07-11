@@ -10,7 +10,7 @@ const fileRoutes = (app: Express) => {
     app.get('/api/files/download', authMiddleware, FileController.downloadFile)
     app.get('/api/files/search', authMiddleware, FileController.searchFile)
 
-    app.delete('/api/files', authMiddleware, FileController.deleteFile)
+    app.patch('/api/files/update_status', authMiddleware, FileController.updateFileStatus)
 }
 
 export default fileRoutes
