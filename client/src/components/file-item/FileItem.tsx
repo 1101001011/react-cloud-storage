@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {IFile} from '../../types/file';
+import {IStarredFile} from '../../types/starredFile';
 import {RiFolderUserFill} from 'react-icons/ri';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {
@@ -12,10 +13,11 @@ import {useTypedSelector} from '../../hooks/useTypedSelector';
 import {IoMdImage} from 'react-icons/io';
 import {calcLocation} from '../../utils/calcLocation';
 import {MdSlowMotionVideo} from 'react-icons/md';
+import {isIFile} from '../../utils/isIFile';
 import './fileItem.scss'
 
 interface FileItemProps {
-    file: IFile
+    file: IFile | IStarredFile
 }
 
 const FileItem: FC<FileItemProps> = ({file}) => {
@@ -60,7 +62,7 @@ const FileItem: FC<FileItemProps> = ({file}) => {
         <div
             className='file__item'
             onClick={() => openInfoMenuHandler()}
-            onDoubleClick={() => openDirHandler(file)}
+            onDoubleClick={isIFile(file) ? () => openDirHandler(file) : () => {}}
             onContextMenu={(e) => openContextMenuHandler(e)}
         >
             {file.type === 'dir' && <RiFolderUserFill size={22} className='mr-4 text-neutral-500'/>}

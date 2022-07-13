@@ -1,3 +1,5 @@
+import {IStarredFile} from './starredFile';
+
 export interface IFile {
     _id: string
     name: string
@@ -5,10 +7,10 @@ export interface IFile {
     size: number
     path: string
     user: string
-    status: string
+    status?: string
     date: string
     parent?: string
-    children: []
+    children?: []
 }
 
 export interface IBreadcrumbsDir {
@@ -24,7 +26,7 @@ export interface FileState {
     error: string | undefined
     createPopupDisplay: string
     uploadPopupDisplay: string
-    contextMenuFile: IFile
+    contextMenuFile: IFile | IStarredFile
     infoMenuFile: IFile | null
     isLoader: boolean
 }

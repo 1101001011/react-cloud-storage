@@ -8,11 +8,19 @@ interface SortContextMenuProps {
 }
 
 const SortContextMenu: FC<SortContextMenuProps> = ({sortValue, setSortValue}) => {
+    const sortContextMenu = document.querySelector('#sort-context-menu') as HTMLElement
+
+    function SortContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
+        e.stopPropagation()
+        setSortValue((e.target as HTMLDivElement).getAttribute('data-value-type'))
+        sortContextMenu.classList.remove('active')
+    }
+
     return (
         <div
             className='context__menu'
             id='sort-context-menu'
-            onClick={(e) => setSortValue((e.target as HTMLDivElement).getAttribute('data-value-type'))}
+            onClick={(e) => SortContextMenuHandler(e)}
         >
             <div
                 className='grid grid-item px-4 py-1 mt-4 hover:bg-neutral-100 cursor-pointer'

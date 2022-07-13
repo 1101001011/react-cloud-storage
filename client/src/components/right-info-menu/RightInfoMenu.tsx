@@ -27,7 +27,7 @@ const RightInfoMenu: FC<RightInfoMenuProps> = ({file}) => {
     }
 
     return (
-        <div className='border-l'>
+        <div className='border-l' onClick={e => e.stopPropagation()}>
             {file &&
                 <div>
                     <div className='flex flex-col items-center py-8 border-b'>

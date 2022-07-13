@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, {useEffect, useState} from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useAppDispatch } from './hooks/useAppDispatch'
 import { useTypedSelector } from './hooks/useTypedSelector'
@@ -9,11 +9,17 @@ import { auth } from './store/reducers/userReducer'
 import DiskPage from './pages/disk-page/DiskPage';
 import StarredFilesPage from './pages/starred-files-page/StarredFilesPage';
 import TrashCanPage from './pages/trash-can-page/TrashCanPage';
+import DefaultContextMenu from './components/UI/context-menu/DefaultContextMenu';
+import FileContextMenu from './components/UI/context-menu/FileContextMenu';
+import DirContextMenu from './components/UI/context-menu/DirContextMenu';
+import SortContextMenu from './components/UI/context-menu/SortContextMenu';
 
 window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
-	const { isAuth, isLoader } = useTypedSelector(state => state.user)
 	const dispatch = useAppDispatch()
+	const [sortValue, setSortValue] = useState<string | null>('name')
+	const { isAuth, isLoader } = useTypedSelector(state => state.user)
+	const {contextMenuFile} = useTypedSelector(state => state.files)
 
 	useEffect(() => {
 		dispatch(auth())
@@ -38,10 +44,10 @@ const App = () => {
 				<Routes>
 					{isAuth ? (
 						<Route>
-							<Route path='/storage/main' element={<DiskPage />} />
-							<Route path='/storage/starred' element={<StarredFilesPage />} />
+							<Route path='/storage/main' element={<DiskPage sortValue={sortValue}/>} />
+							<Route path='/storage/starred' element={<StarredFilesPage sortValue={sortValue}/>} />
 							<Route path='/storage/trash' element={<TrashCanPage />} />
-							<Route path='*' element={<DiskPage />} />
+							<Route path='*' element={<DiskPage sortValue={sortValue}/>} />
 						</Route>
 					) : (
 						<Route>
@@ -52,6 +58,12 @@ const App = () => {
 						</Route>
 					)}
 				</Routes>
+				<div>
+					<DefaultContextMenu/>
+					<FileContextMenu file={contextMenuFile}/>
+					<DirContextMenu file={contextMenuFile}/>
+					<SortContextMenu sortValue={sortValue} setSortValue={setSortValue}/>
+				</div>
 			</div>
 		</BrowserRouter>
 	)
