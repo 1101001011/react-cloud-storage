@@ -28,6 +28,11 @@ class DeletedFileController {
             }
 
             FileService.deleteFile(file)
+            const children = file.children
+            children?.forEach(async child => {
+                const childFile = await File.findOne({_id: child})
+                await childFile?.remove()
+            })
             await file.remove()
             await user.save()
 

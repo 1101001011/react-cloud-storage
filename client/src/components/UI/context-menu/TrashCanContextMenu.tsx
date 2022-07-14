@@ -15,7 +15,11 @@ interface TrashCanContextMenuProps {
 const TrashCanContextMenu: FC<TrashCanContextMenuProps> = ({file}) => {
     const dispatch = useAppDispatch()
     const {starredFile} = useTypedSelector(state => state.starredFiles)
+    const {deletedFiles} = useTypedSelector(state => state.deletedFiles)
     const contextMenu = document.querySelector('#delete-context-menu') as HTMLElement
+
+    const childrenFiles = deletedFiles.filter(f => f.path.includes(file.path) && f.type !== 'dir')
+    const dirs = deletedFiles.filter(f => f.path.includes(file.path) && f.type === 'dir')
 
     function clickContextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation()
@@ -27,6 +31,11 @@ const TrashCanContextMenu: FC<TrashCanContextMenuProps> = ({file}) => {
         if (file.name === starredFile.name && file.path === starredFile.path) {
             dispatch(createStarredFile(file))
         }
+    }
+
+    function deleteDeletedFileHandler() {
+        childrenFiles.forEach(f => dispatch(deleteFile(f)))
+        dirs.forEach(f => dispatch(deleteFile(f)))
     }
 
     return (
@@ -45,7 +54,7 @@ const TrashCanContextMenu: FC<TrashCanContextMenuProps> = ({file}) => {
             <hr className='my-1.5'/>
             <div
                 className='grid grid-item px-4 py-1 mb-4 hover:bg-neutral-100 cursor-pointer'
-                onClick={() => dispatch(deleteFile(file))}
+                onClick={() => deleteDeletedFileHandler()}
             >
                 <RiDeleteBin6Line size={25} className='text-neutral-500'/>
                 Удалить навсегда
