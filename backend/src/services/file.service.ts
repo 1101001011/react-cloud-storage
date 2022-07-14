@@ -32,6 +32,15 @@ class FileService {
 			fs.unlinkSync(filePath)
 		}
 	}
+
+	renameFile(file: FileInput, newName: string) {
+		const filePath = this.getPath(file)
+		file.path = (file.path)?.replace(file.name, newName)
+		const newPath = `${config.get<string>('filePath')}\\${file.user}\\${file.path}`
+		fs.renameSync(filePath, newPath)
+
+		return file
+	}
 }
 
 export default new FileService()

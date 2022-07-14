@@ -100,6 +100,8 @@ class FileController {
                 user: user._id
             })
 
+            if (parent) parent.children.push(dbFile._id)
+
             await dbFile.save()
             await user.save()
             if (parent) await parent.save()
@@ -162,6 +164,25 @@ class FileController {
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Search error'})
+        }
+    }
+
+    async renameFile(req: Request, res: Response) {
+        try {
+            const newName = String(req.query.name)
+            const userId = res.locals.user._id
+
+            const file = (await File.findOne({_id: req.query.id, user: userId}))!
+
+            const updatedFile = FileService.renameFile(file, newName)
+            await File.updateOne({_id: req.query.id, user: userId},
+                {$set: {name: newName, path: updatedFile.path}})
+            const renamedFile = await File.findOne({_id: req.query.id, user: userId})
+
+            return res.json(renamedFile)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Rename file error'})
         }
     }
 }

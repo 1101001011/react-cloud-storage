@@ -8,6 +8,8 @@ const starredFileRoutes = (app: Express) => {
     app.get('/api/starred_files', authMiddleware, StarredFileController.getStarredFiles)
 
     app.delete('/api/starred_files', authMiddleware, StarredFileController.deleteStarredFile)
+
+    app.patch('/api/starred_files/rename', authMiddleware, StarredFileController.renameStarredFile)
 }
 
 export default starredFileRoutes

@@ -64,6 +64,25 @@ class StarredFileController {
             return res.status(400).json({message: 'Dir is not empty'})
         }
     }
+
+    async renameStarredFile(req: Request, res: Response) {
+        try {
+            const newName = String(req.query.name)
+            const userId = res.locals.user._id
+
+            const file = (await StarredFile.findOne({_id: req.query.id, user: userId}))!
+            const newLocalFilePath = (file.path)?.replace(file.name, newName)
+
+            await StarredFile.updateOne({_id: req.query.id, user: userId},
+                {$set: {name: newName, path: newLocalFilePath}})
+            const renamedFile = await StarredFile.findOne({_id: req.query.id, user: userId})
+
+            return res.json(renamedFile)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Rename starred file error'})
+        }
+    }
 }
 
 export default new StarredFileController()

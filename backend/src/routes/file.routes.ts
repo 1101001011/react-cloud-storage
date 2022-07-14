@@ -11,6 +11,7 @@ const fileRoutes = (app: Express) => {
     app.get('/api/files/search', authMiddleware, FileController.searchFile)
 
     app.patch('/api/files/update_status', authMiddleware, FileController.updateFileStatus)
+    app.patch('/api/files/rename', authMiddleware, FileController.renameFile)
 }
 
 export default fileRoutes
