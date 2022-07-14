@@ -3,7 +3,12 @@ import {IoMdStar, IoMdStarOutline} from 'react-icons/io';
 import {MdDriveFileRenameOutline, MdOutlineFileDownload} from 'react-icons/md';
 import {BiInfoCircle} from 'react-icons/bi';
 import {RiDeleteBin6Line} from 'react-icons/ri';
-import {downloadFile, setInfoMenuFile, updateFileStatus} from '../../../store/reducers/filesReducer';
+import {
+    downloadFile,
+    setInfoMenuFile,
+    setRenamePopupDisplay,
+    updateFileStatus
+} from '../../../store/reducers/filesReducer';
 import {useAppDispatch} from '../../../hooks/useAppDispatch';
 import {IFile} from '../../../types/file';
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
@@ -78,7 +83,10 @@ const FileContextMenu: FC<FileContextMenuProps> = ({file}) => {
                 </div>
             }
 
-            <div className='grid grid-item px-4 py-1 hover:bg-neutral-100 cursor-pointer'>
+            <div
+                className='grid grid-item px-4 py-1 hover:bg-neutral-100 cursor-pointer'
+                onClick={() => dispatch(setRenamePopupDisplay('block'))}
+            >
                 <MdDriveFileRenameOutline size={25} className='text-neutral-500'/>
                 Переименовать
             </div>

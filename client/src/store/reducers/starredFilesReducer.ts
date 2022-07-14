@@ -66,6 +66,27 @@ export const deleteStarredFile = createAsyncThunk<
     }
 )
 
+export const renameStarredFile = createAsyncThunk<
+    IStarredFile,
+    {file: IStarredFile, name: string},
+    {rejectValue: string}>(
+    'starredFiles/rename', async (data, {rejectWithValue}) => {
+        try {
+            const {file, name} = data
+            const url = `http://localhost:5000/api/starred_files/rename?id=${file._id}&name=${file.type === 'dir' ? name : name + '.' + file.type}`
+            const response = await axios.patch(url, {}, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+
+            return response.data
+        } catch (e: any) {
+            return rejectWithValue(e.response.data.message)
+        }
+    }
+)
+
 const initialState: StarredFileState = {
     starredFiles: [],
     isLoader: false,
@@ -100,6 +121,10 @@ const starredFilesSlice = createSlice({
             })
             .addCase(deleteStarredFile.rejected, (state, action) => {
                 alert(action.payload)
+            })
+            .addCase(renameStarredFile.fulfilled, (state, action) => {
+                const starredFile = state.starredFiles.find(f => f._id === action.payload._id)!
+                starredFile.name = action.payload.name
             })
 })
 

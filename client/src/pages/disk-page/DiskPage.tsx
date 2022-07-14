@@ -3,8 +3,9 @@ import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {getFiles, setInfoMenuFile, setUploadPopupDisplay} from '../../store/reducers/filesReducer';
 import {useTypedSelector} from '../../hooks/useTypedSelector';
 import FileList from '../../components/file-list/FileList';
-import Popup from '../../components/UI/popup/Popup';
 import Breadcrumbs from '../../components/UI/breadcrumbs/Breadcrumbs';
+import CreatePopup from '../../components/UI/popup/CreatePopup';
+import UploadPopup from '../../components/UI/popup/UploadPopup';
 import FileUploadPopup from '../../components/UI/file-upload-popup/FileUploadPopup';
 import {calcLocation} from '../../utils/calcLocation';
 import Navbar from '../../components/UI/navbar/Navbar';
@@ -93,7 +94,8 @@ const DiskPage: FC<DiskPageProps> = ({sortValue}) => {
                     <Breadcrumbs/>
                     <div className='px-2 h-auto h-max-min-540 flex flex-col overflow-y-auto'>
                         <FileList allFiles={files} sortValue={sortValue}/>
-                        <Popup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
+                        <CreatePopup/>
+                        <UploadPopup dragEnter={dragEnter} setDragEnter={setDragEnter}/>
                         <FileUploadPopup/>
                     </div>
                 </div>

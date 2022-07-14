@@ -159,6 +159,27 @@ export const searchFiles = createAsyncThunk<IFile[], string, {rejectValue: strin
 	}
 )
 
+export const renameFile = createAsyncThunk<
+	IFile,
+	{file: IFile, name: string},
+	{rejectValue: string}>(
+	'files/rename', async (data, {rejectWithValue}) => {
+		try {
+			const {file, name} = data
+			const url = `http://localhost:5000/api/files/rename?id=${file._id}&name=${file.type === 'dir' ? name : name + '.' + file.type}`
+			const response = await axios.patch(url, {}, {
+				headers: {
+					authorization: `Bearer ${localStorage.getItem('token')}`
+				}
+			})
+
+			return response.data
+		} catch (e: any) {
+			return rejectWithValue(e.response.data.message)
+		}
+	}
+)
+
 const initialState: FileState = {
 	files: [],
 	allFiles: [],
@@ -169,6 +190,7 @@ const initialState: FileState = {
 	error: '',
 	createPopupDisplay: 'none',
 	uploadPopupDisplay: 'none',
+	renamePopupDisplay: 'none',
 	contextMenuFile: {
 		_id: '', type: '', name: '', user: '', path: '', size: 0, children: [], status: 'active', date: ''
 	},
@@ -194,6 +216,9 @@ const filesSlice = createSlice({
 		},
 		setUploadPopupDisplay(state, action) {
 			state.uploadPopupDisplay = action.payload
+		},
+		setRenamePopupDisplay(state, action) {
+			state.renamePopupDisplay = action.payload
 		},
 		setContextMenuFile(state, action) {
 			state.contextMenuFile = action.payload
@@ -231,6 +256,10 @@ const filesSlice = createSlice({
 				state.isLoader = false
 				state.files = action.payload
 			})
+			.addCase(renameFile.fulfilled, (state, action) => {
+				const file = state.files.find(f => f._id === action.payload._id)!
+				file.name = action.payload.name
+			})
 	}
 })
 
@@ -241,6 +270,7 @@ export const {
 	sliceDirStack,
 	setCreatePopupDisplay,
 	setUploadPopupDisplay,
+	setRenamePopupDisplay,
 	setContextMenuFile,
 	setInfoMenuFile,
 	showLoader

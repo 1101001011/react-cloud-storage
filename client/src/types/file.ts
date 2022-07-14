@@ -26,6 +26,7 @@ export interface FileState {
     error: string | undefined
     createPopupDisplay: string
     uploadPopupDisplay: string
+    renamePopupDisplay: string
     contextMenuFile: IFile | IStarredFile
     infoMenuFile: IFile | null
     isLoader: boolean

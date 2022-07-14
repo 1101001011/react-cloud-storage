@@ -13,6 +13,7 @@ import DefaultContextMenu from './components/UI/context-menu/DefaultContextMenu'
 import FileContextMenu from './components/UI/context-menu/FileContextMenu';
 import DirContextMenu from './components/UI/context-menu/DirContextMenu';
 import SortContextMenu from './components/UI/context-menu/SortContextMenu';
+import RenamePopup from './components/UI/popup/RenamePopup';
 
 window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
@@ -63,6 +64,7 @@ const App = () => {
 					<FileContextMenu file={contextMenuFile}/>
 					<DirContextMenu file={contextMenuFile}/>
 					<SortContextMenu sortValue={sortValue} setSortValue={setSortValue}/>
+					<RenamePopup file={contextMenuFile}/>
 				</div>
 			</div>
 		</BrowserRouter>
