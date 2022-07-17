@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import { useAppDispatch } from './hooks/useAppDispatch'
 import { useTypedSelector } from './hooks/useTypedSelector'
 import LoginPage from './pages/authorization-pages/LoginPage'
@@ -14,17 +14,23 @@ import FileContextMenu from './components/UI/context-menu/FileContextMenu';
 import DirContextMenu from './components/UI/context-menu/DirContextMenu';
 import SortContextMenu from './components/UI/context-menu/SortContextMenu';
 import RenamePopup from './components/UI/popup/RenamePopup';
+import {getSpace} from './store/reducers/appReducer';
 
 window.addEventListener('contextmenu', e => e.preventDefault())
 const App = () => {
 	const dispatch = useAppDispatch()
 	const [sortValue, setSortValue] = useState<string | null>('name')
-	const { isAuth, isLoader } = useTypedSelector(state => state.user)
-	const {contextMenuFile} = useTypedSelector(state => state.files)
+	const {isAuth, isLoader} = useTypedSelector(state => state.user)
+	const {files, contextMenuFile} = useTypedSelector(state => state.files)
+	const {deletedFiles} = useTypedSelector(state => state.deletedFiles)
 
 	useEffect(() => {
 		dispatch(auth())
 	}, [dispatch])
+
+	useEffect(() => {
+		isAuth && dispatch(getSpace())
+	}, [files, deletedFiles])
 
 	if (isLoader) {
 		return (
@@ -45,17 +51,17 @@ const App = () => {
 				<Routes>
 					{isAuth ? (
 						<Route>
-							<Route path='/storage/main' element={<DiskPage sortValue={sortValue}/>} />
-							<Route path='/storage/starred' element={<StarredFilesPage sortValue={sortValue}/>} />
+							<Route path='/storage/main' element={<DiskPage sortValue={sortValue} />} />
+							<Route path='/storage/starred' element={<StarredFilesPage sortValue={sortValue} />} />
 							<Route path='/storage/trash' element={<TrashCanPage />} />
-							<Route path='*' element={<DiskPage sortValue={sortValue}/>} />
+							<Route path='*' element={<Navigate to='/storage/main' replace={true} />} />
 						</Route>
 					) : (
 						<Route>
 							<Route path='/home' element={<HomePage />} />
 							<Route path='/registration' element={<RegistrationPage />} />
 							<Route path='/login' element={<LoginPage />} />
-							<Route path='*' element={<HomePage />} />
+							<Route path='*' element={<Navigate to='/home' replace={true} />} />
 						</Route>
 					)}
 				</Routes>

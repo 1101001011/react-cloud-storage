@@ -9,6 +9,7 @@ import deletedFileRoutes from './routes/deletedFile.routes';
 import starredFileRoutes from './routes/starredFile.routes';
 import {connect} from './utils/connect.utils';
 import log from './utils/logger.utils';
+import appRoutes from './routes/app.routes';
 
 const app = express()
 const PORT = config.get('serverPort')
@@ -29,6 +30,7 @@ const start = async () => {
 	fileRoutes(app)
 	deletedFileRoutes(app)
 	starredFileRoutes(app)
+	appRoutes(app)
 }
 
 start()

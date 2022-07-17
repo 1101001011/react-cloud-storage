@@ -28,6 +28,11 @@ class DeletedFileController {
             }
 
             FileService.deleteFile(file)
+
+            // @ts-ignore
+            user.usedSpace = user.usedSpace - file.size
+            if (user.usedSpace < 0) user.usedSpace = 0
+
             const children = file.children
             children?.forEach(async child => {
                 const childFile = await File.findOne({_id: child})
@@ -50,13 +55,10 @@ class DeletedFileController {
         try {
             const userId = res.locals.user._id
 
-            const user = (await User.findOne({_id: userId}))!
             await File.updateOne({_id: req.query.id, user: userId}, {$set: {status: 'active'}})
             const file = await File.findOne({_id: req.query.id, user: userId})
             const parent = (await File.findOne({user: userId, _id: req.body.parent}))!
 
-            // @ts-ignore
-            user.usedSpace = user.usedSpace + file.size
             // @ts-ignore
             if (parent) parent.size = parent.size + file.size
             if (parent) await parent.save()
