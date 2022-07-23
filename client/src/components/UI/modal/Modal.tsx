@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
 import {login, registration, resetErrors} from '../../../store/reducers/userReducer'
 import Button from '../button/Button'
@@ -11,9 +11,15 @@ type modalTypes = 'login' | 'registration'
 
 const Modal = ({type}: {type: modalTypes}) => {
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 	const {emailError, passwordError, compareError} = useTypedSelector(state => state.user)
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+
+	function registrationHandler() {
+		if (email && password && !emailError && !passwordError) navigate('/login')
+		dispatch(registration({ dispatch, email, password }))
+	}
 
 	return (
 		<div className={styles.modal}>
@@ -59,7 +65,7 @@ const Modal = ({type}: {type: modalTypes}) => {
 				<Button
 					className='btn-primary text-white bg-violet-600 hover:bg-violet-500 rounded-md'
 					type='registration'
-					onClick={() => dispatch(registration({ dispatch, email, password }))}
+					onClick={() => registrationHandler()}
 				>
 					Sign Up
 				</Button>
