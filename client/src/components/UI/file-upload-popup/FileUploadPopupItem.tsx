@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import {IoMdImage} from 'react-icons/io';
 import {IoCheckmarkCircle} from 'react-icons/io5';
 import {IUploadFile} from '../../../types/upload';
+import styles from './fileUploadPopupItem.module.scss'
 
 interface FileUploadItemProps {
     file: IUploadFile
@@ -9,12 +10,12 @@ interface FileUploadItemProps {
 
 const FileUploadPopupItem: FC<FileUploadItemProps> = ({file}) => {
     return (
-        <div className='p-4 border-b border-neutral-200'>
-            <div className='mb-0.5 flex items-center text-l'>
+        <div className={styles.upload__item__wrap}>
+            <div className={styles.upload__item}>
                 <IoMdImage size={22} className='mr-4 text-orange-600'/>
-                <p className='flex grow'>{file.name}</p>
+                <p className={styles.upload__name}>{file.name}</p>
                 {file.progress === 100 &&
-                    <IoCheckmarkCircle size={24} className='text-green-600'/>
+                    <IoCheckmarkCircle size={24} className='ml-auto text-green-600'/>
                 }
             </div>
             {file.progress < 100 &&

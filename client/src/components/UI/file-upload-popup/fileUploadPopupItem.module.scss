@@ -1,0 +1,11 @@
+.upload__item__wrap {
+	@apply p-4 border-b border-neutral-200
+}
+
+.upload__item {
+	@apply mb-0.5 flex items-center text-l
+}
+
+.upload__name {
+	@apply w-72 overflow-ellipsis whitespace-nowrap overflow-hidden
+}
