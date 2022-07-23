@@ -3,8 +3,8 @@ import {NavLink, useNavigate} from 'react-router-dom'
 import { useAppDispatch } from '../../../hooks/useAppDispatch'
 import {login, registration, resetErrors} from '../../../store/reducers/userReducer'
 import Button from '../button/Button'
-import Input from '../input/Input'
 import {useTypedSelector} from '../../../hooks/useTypedSelector';
+import {IoIosEye, IoMdEyeOff} from 'react-icons/io';
 import styles from './modal.module.scss'
 
 type modalTypes = 'login' | 'registration'
@@ -13,8 +13,9 @@ const Modal = ({type}: {type: modalTypes}) => {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const {emailError, passwordError, compareError} = useTypedSelector(state => state.user)
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+	const [email, setEmail] = useState<string>('')
+	const [password, setPassword] = useState<string>('')
+	const [isText, setIsText] = useState<boolean>(false)
 
 	function registrationHandler() {
 		if (email && password && !emailError && !passwordError) navigate('/login')
@@ -29,8 +30,8 @@ const Modal = ({type}: {type: modalTypes}) => {
 				<span className='text-4xl text-gray-300'>of your account</span>
 			</span>
 			<div className={styles.inputs}>
-				<Input
-					className='input mt-3'
+				<input
+					className='input my-3 w-full'
 					value={email}
 					onChange={e => setEmail(e.target.value)}
 					type='email'
@@ -39,13 +40,24 @@ const Modal = ({type}: {type: modalTypes}) => {
 				{emailError &&
 					<p className='ml-2 mt-1 text-sm text-red-600'>{emailError}</p>
 				}
-				<Input
-					className='input mt-3'
-					value={password}
-					onChange={e => setPassword(e.target.value)}
-					type='password'
-					placeholder='Password'
-				/>
+				<div className='relative flex items-center w-full'>
+					<span
+						className='absolute right-4 top-0 h-full flex items-center justify-center text-neutral-400 cursor-pointer'
+						onClick={!isText ? () => setIsText(true) : () => setIsText(false)}
+					>
+						{isText
+							? <IoIosEye size={20}/>
+							: <IoMdEyeOff size={20}/>
+						}
+					</span>
+					<input
+						className='input w-full'
+						value={password}
+						onChange={e => setPassword(e.target.value)}
+						type={isText ? 'text' : 'password'}
+						placeholder='Password'
+					/>
+				</div>
 				{passwordError &&
 					<p className='ml-2 mt-1 text-sm text-red-600'>{passwordError}</p>
 				}
