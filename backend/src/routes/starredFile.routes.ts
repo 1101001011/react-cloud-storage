@@ -3,13 +3,13 @@ import authMiddleware from '../middlewares/auth.middleware';
 import StarredFileController from '../controllers/starredFile.controller';
 
 const starredFileRoutes = (app: Express) => {
-    app.post('/api/starred_files', authMiddleware, StarredFileController.createStarredFile)
+    app.post('/api/starred_files', StarredFileController.createStarredFile)
 
-    app.get('/api/starred_files', authMiddleware, StarredFileController.getStarredFiles)
+    app.get('/api/starred_files', StarredFileController.getStarredFiles)
 
-    app.delete('/api/starred_files', authMiddleware, StarredFileController.deleteStarredFile)
+    app.delete('/api/starred_files', StarredFileController.deleteStarredFile)
 
-    app.patch('/api/starred_files/rename', authMiddleware, StarredFileController.renameStarredFile)
+    app.patch('/api/starred_files/rename', StarredFileController.renameStarredFile)
 }
 
 export default starredFileRoutes

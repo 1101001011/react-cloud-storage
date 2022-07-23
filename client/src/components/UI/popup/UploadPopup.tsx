@@ -39,8 +39,23 @@ const UploadPopup: FC<UploadPopupProps> = ({dragEnter, setDragEnter}) => {
         // @ts-ignore
         const files = [...e.target.files]
         dispatch(setSelectedFilesCount(files.length))
-        files.forEach(file => dispatch(uploadFile({dispatch, file, currentDir})))
         dispatch(setUploadPopupDisplay('none'))
+        promiseForEach(files, (file) => dispatch(uploadFile({dispatch, file, currentDir})))
+    }
+
+    function promiseForEach(arr: any, cb: (item: any, index: number) => any) {
+        let i = 0;
+
+        const nextPromise = function (): any {
+            if (i >= arr.length) return
+
+            const newPromise = Promise.resolve(cb(arr[i], i))
+            i++
+
+            return newPromise.then(nextPromise)
+        }
+
+        return Promise.resolve().then(nextPromise)
     }
 
     return (

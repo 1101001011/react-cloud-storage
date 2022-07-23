@@ -11,7 +11,7 @@ export interface UserDocument extends UserInput, mongoose.Document {
 	diskSpace: number
 	usedSpace: number
 	avatar: string
-	files: mongoose.Schema.Types.ObjectId
+	files: [mongoose.Schema.Types.ObjectId]
 	comparePassword: (candidate: string) => Promise<boolean>
 }
 
