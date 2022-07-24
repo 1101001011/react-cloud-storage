@@ -64,7 +64,7 @@ const Navbar = () => {
 			)}
 			{isAuth && (
 				<div
-					className='ml-auto mr-7 text-sm cursor-pointer'
+					className='ml-auto mr-7 text-sm text-gray-500 cursor-pointer'
 					onClick={() => dispatch(logout())}
 				>
 					<NavLink to='/login'>Sign Out</NavLink>
