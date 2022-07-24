@@ -116,9 +116,15 @@ const userSlice = createSlice({
 				state.isAuth = true
 				localStorage.setItem('token', action.payload.token)
 			})
-			.addCase(auth.rejected, () => localStorage.removeItem('token'))
+			.addCase(auth.rejected, (state) => {
+				state.isLoader = false
+				localStorage.removeItem('token')
+			})
+			.addCase(auth.pending, (state) => {
+				state.isLoader = true
+			})
 	},
 })
 
 export default userSlice.reducer
-export const { logout, showLoader, resetErrors } = userSlice.actions
+export const { logout, resetErrors } = userSlice.actions
